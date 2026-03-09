@@ -1,7 +1,11 @@
 package com.amroad.passwkeeper.ui.component
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,8 +18,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -36,17 +44,35 @@ fun VaultFolderCard(
     onSelect: () -> Unit,
     onPinClick: () -> Unit,
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed = interactionSource.collectIsPressedAsState()
+
+    val scale = animateFloatAsState(
+        targetValue = if (isPressed.value) 0.98f else 1f,
+        label = "card_scale"
+    )
+
+    val bgColor = animateColorAsState(
+        targetValue = when {
+            isPressed.value -> Color(0xFFE2E9FA)
+            isSelected -> Color(0xFFEAF0FF)
+            else -> Color(0xFFF6F6F6)
+        },
+        label = "card_bg"
+    )
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(96.dp)
-            .padding(horizontal = 8.dp)
-            .background(
-                color = if (isSelected) Color(0xFFEAF0FF) else Color(0xFFF6F6F6),
-                shape = RoundedCornerShape(40.dp)
+            .height(98.dp)
+            .scale(scale.value)
+            .clip(RoundedCornerShape(40.dp))
+            .background(bgColor.value)
+            .clickable(
+                interactionSource = interactionSource,
+                onClick = onClick
             )
-            .clickable { onClick() }
-            .padding(horizontal = 22.dp),
+            .padding(start = 11.dp, end = 26.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         PinButton(
@@ -62,9 +88,10 @@ fun VaultFolderCard(
             Text(
                 text = title,
                 style = TextStyle(
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.W700,
-                    color = Color.Black
+                    fontSize = 15.sp,
+                    fontFamily = FontFamily(Font(R.font.heebo_bold)),
+                    fontWeight = FontWeight.W900,
+                    color = Color(0xFF000000)
                 )
             )
 
@@ -73,7 +100,7 @@ fun VaultFolderCard(
             Text(
                 text = subtitle,
                 style = TextStyle(
-                    fontSize = 18.sp,
+                    fontSize = 15.sp,
                     fontFamily = FontFamily(Font(R.font.heebo_regular)),
                     fontWeight = FontWeight.W400,
                     color = Color.Black
@@ -83,8 +110,7 @@ fun VaultFolderCard(
 
         Box(
             modifier = Modifier
-                .clickable { onSelect() }
-                .padding(end = 18.dp),
+                .padding(end = 24.dp),
             contentAlignment = Alignment.Center
         ) {
             Image(
@@ -95,9 +121,11 @@ fun VaultFolderCard(
         }
 
         Image(
-            painter = painterResource(id = R.drawable.ic_chevron_right),
+            painter = painterResource(id = R.drawable.ic_back_arrow),
             contentDescription = "Open",
-            modifier = Modifier.size(24.dp)
+            modifier = Modifier
+                .size(24.dp)
+                .rotate(180f)
         )
     }
 }

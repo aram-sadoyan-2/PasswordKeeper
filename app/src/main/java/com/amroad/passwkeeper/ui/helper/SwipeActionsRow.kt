@@ -8,12 +8,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -32,13 +33,13 @@ fun SwipeActionsRow(
 ) {
     Row(
         modifier = modifier
-            .height(96.dp)
+            .height(92.dp)
             .background(
                 color = Color(0xFFD9D9D9),
                 shape = RoundedCornerShape(40.dp)
             )
-            .padding(horizontal = 14.dp, vertical = 10.dp),
-        horizontalArrangement = Arrangement.spacedBy(10.dp),
+            .padding(horizontal = 18.dp, vertical = 12.dp),
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         ActionPill(
@@ -70,18 +71,20 @@ private fun ActionPill(
     Box(
         modifier = Modifier
             .fillMaxHeight()
-            .width(92.dp)
+            .wrapContentWidth()
+            .clip(RoundedCornerShape(14.dp))
             .background(
                 color = background,
-                shape = RoundedCornerShape(28.dp)
+                shape = RoundedCornerShape(14.dp)
             )
             .clickable { onClick() },
         contentAlignment = Alignment.Center
     ) {
         Text(
+            modifier = Modifier.padding(horizontal = 4.dp),
             text = text,
             style = TextStyle(
-                fontSize = 16.sp,
+                fontSize = 14.sp,
                 fontFamily = FontFamily(Font(R.font.heebo_semibold)),
                 fontWeight = FontWeight.W600,
                 color = Color.White
