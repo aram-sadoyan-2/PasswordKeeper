@@ -93,7 +93,7 @@ fun VaultFolderSwipeItem(
             onDelete = onDelete,
             modifier = Modifier
                 .align(Alignment.CenterEnd)
-                .padding(horizontal = 8.dp)
+                .padding(horizontal = 8.dp) // under gray view padding
                 .onSizeChanged { size ->
                     if (size.width > 0) {
                         actionsWidthPx = size.width.toFloat()

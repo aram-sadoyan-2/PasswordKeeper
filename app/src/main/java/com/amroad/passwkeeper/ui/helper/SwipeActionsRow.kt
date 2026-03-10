@@ -38,7 +38,7 @@ fun SwipeActionsRow(
                 color = Color(0xFFD9D9D9),
                 shape = RoundedCornerShape(40.dp)
             )
-            .padding(horizontal = 18.dp, vertical = 12.dp),
+            .padding(vertical = 12.dp).padding(start = 18.dp, end = 18.dp),
         horizontalArrangement = Arrangement.spacedBy(4.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
