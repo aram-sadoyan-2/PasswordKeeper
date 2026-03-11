@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -31,34 +31,44 @@ fun SwipeActionsRow(
     onDelete: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Row(
+    Box(
         modifier = modifier
-            .height(92.dp)
-            .background(
-                color = Color(0xFFD9D9D9),
-                shape = RoundedCornerShape(40.dp)
-            )
-            .padding(vertical = 12.dp).padding(start = 18.dp, end = 18.dp),
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
-        verticalAlignment = Alignment.CenterVertically
+            .fillMaxWidth()
+            .fillMaxHeight()
+            .clip(RoundedCornerShape(40.dp))
+            .background(Color(0xFFD9D9D9))
     ) {
-        ActionPill(
-            text = "Rename",
-            background = Color(0xFF9EA4AB),
-            onClick = onRename,
-        )
+        Row(
+            modifier = Modifier
+                .align(Alignment.CenterEnd)
+                .fillMaxHeight()
+                .padding(
+                    start = 70.dp,   // empty gray area on the left
+                    end = 18.dp,
+                    top = 12.dp,
+                    bottom = 12.dp
+                ),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            ActionPill(
+                text = "Rename",
+                background = Color(0xFF9EA4AB),
+                onClick = onRename,
+            )
 
-        ActionPill(
-            text = "Copy",
-            background = Color(0xFF93C96F),
-            onClick = onCopy,
-        )
+            ActionPill(
+                text = "Copy",
+                background = Color(0xFF93C96F),
+                onClick = onCopy,
+            )
 
-        ActionPill(
-            text = "Delete",
-            background = Color(0xFFF77E5B),
-            onClick = onDelete,
-        )
+            ActionPill(
+                text = "Delete",
+                background = Color(0xFFF77E5B),
+                onClick = onDelete,
+            )
+        }
     }
 }
 
@@ -72,11 +82,8 @@ private fun ActionPill(
         modifier = Modifier
             .fillMaxHeight()
             .wrapContentWidth()
-            .clip(RoundedCornerShape(14.dp))
-            .background(
-                color = background,
-                shape = RoundedCornerShape(14.dp)
-            )
+            .clip(RoundedCornerShape(24.dp))
+            .background(background)
             .clickable { onClick() },
         contentAlignment = Alignment.Center
     ) {

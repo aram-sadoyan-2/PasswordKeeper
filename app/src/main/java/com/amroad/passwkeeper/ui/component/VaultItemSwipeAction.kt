@@ -21,7 +21,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -51,8 +50,11 @@ fun VaultFolderSwipeItem(
     val decayAnimation = rememberSplineBasedDecay<Float>()
     val itemHeight = 96.dp
 
-    val fallbackActionsWidthPx = with(density) { 260.dp.toPx() }
-    var actionsWidthPx by remember { mutableFloatStateOf(fallbackActionsWidthPx) }
+    // swipe distance = visible actions width only
+    val swipeWidth = 200.dp
+    val swipeWidthPx = with(density) { swipeWidth.toPx() }
+
+    var actionsWidthPx by remember { mutableFloatStateOf(swipeWidthPx) }
 
     val state = remember(density) {
         AnchoredDraggableState(
@@ -66,7 +68,7 @@ fun VaultFolderSwipeItem(
             updateAnchors(
                 DraggableAnchors {
                     DragValue.Closed at 0f
-                    DragValue.Open at -fallbackActionsWidthPx
+                    DragValue.Open at -swipeWidthPx
                 }
             )
         }
@@ -92,13 +94,9 @@ fun VaultFolderSwipeItem(
             onCopy = onCopy,
             onDelete = onDelete,
             modifier = Modifier
-                .align(Alignment.CenterEnd)
-                .padding(horizontal = 8.dp) // under gray view padding
-                .onSizeChanged { size ->
-                    if (size.width > 0) {
-                        actionsWidthPx = size.width.toFloat()
-                    }
-                }
+                .matchParentSize()
+                .padding(horizontal = 8.dp)
+                .align(Alignment.Center)
         )
 
         Box(
