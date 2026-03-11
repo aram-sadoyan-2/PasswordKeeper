@@ -3,7 +3,7 @@ package com.amroad.passwkeeper.factory
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.amroad.passwkeeper.data.SecurePrefs
+import com.amroad.passwkeeper.helper.SecurePrefs
 import com.amroad.passwkeeper.repo.PasscodeRepository
 import com.amroad.passwkeeper.viewmodel.PasscodeViewModel
 

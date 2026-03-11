@@ -26,7 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.amroad.passwkeeper.R
-import com.amroad.passwkeeper.data.VaultFolder
+import com.amroad.passwkeeper.helper.VaultFolder
 import com.amroad.passwkeeper.ui.component.SearchWithEditBarIosStyle
 import com.amroad.passwkeeper.ui.component.VaultFolderSwipeItem
 

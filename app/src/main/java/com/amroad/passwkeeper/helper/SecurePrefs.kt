@@ -1,4 +1,4 @@
-package com.amroad.passwkeeper.data
+package com.amroad.passwkeeper.helper
 
 import android.content.Context
 import androidx.security.crypto.EncryptedSharedPreferences

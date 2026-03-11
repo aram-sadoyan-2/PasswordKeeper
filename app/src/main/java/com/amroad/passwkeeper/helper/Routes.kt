@@ -1,4 +1,4 @@
-package com.amroad.passwkeeper.data
+package com.amroad.passwkeeper.helper
 
 object Routes {
     const val Setup = "setup"

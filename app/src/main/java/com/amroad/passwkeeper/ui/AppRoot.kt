@@ -4,7 +4,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.*
-import com.amroad.passwkeeper.data.Routes
+import com.amroad.passwkeeper.helper.Routes
 import com.amroad.passwkeeper.factory.PasscodeVmFactory
 import com.amroad.passwkeeper.ui.home.HomeScreen
 import com.amroad.passwkeeper.ui.passcodetype.PasscodeConfirmScreen

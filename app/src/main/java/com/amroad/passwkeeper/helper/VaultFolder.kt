@@ -1,4 +1,4 @@
-package com.amroad.passwkeeper.data
+package com.amroad.passwkeeper.helper
 
 data class VaultFolder(
     val id: Int,

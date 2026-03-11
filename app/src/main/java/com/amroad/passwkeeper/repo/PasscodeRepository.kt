@@ -1,8 +1,8 @@
 package com.amroad.passwkeeper.repo
 
 import android.util.Base64
-import com.amroad.passwkeeper.data.PasscodeCrypto
-import com.amroad.passwkeeper.data.SecurePrefs
+import com.amroad.passwkeeper.helper.PasscodeCrypto
+import com.amroad.passwkeeper.helper.SecurePrefs
 
 class PasscodeRepository(private val prefs: SecurePrefs) {
 

@@ -1,9 +1,8 @@
-package com.amroad.passwkeeper.data
+package com.amroad.passwkeeper.helper
 
 import java.security.SecureRandom
 import javax.crypto.SecretKeyFactory
 import javax.crypto.spec.PBEKeySpec
-import kotlin.experimental.xor
 
 object PasscodeCrypto {
     private const val ITERATIONS = 120_000
