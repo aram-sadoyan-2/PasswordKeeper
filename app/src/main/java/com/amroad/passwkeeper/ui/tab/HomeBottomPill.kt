@@ -13,6 +13,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -25,7 +29,7 @@ fun HomeBottomPill(
     modifier: Modifier = Modifier
 ) {
     val containerShape = RoundedCornerShape(999.dp)
-    val selectedBlue = Color(0xFF1E44D9)
+    val selectedBlue = Color(0xFF1D42D9)
     val bg = Color.White
     val text = Color.Black
 
@@ -42,7 +46,6 @@ fun HomeBottomPill(
             .fillMaxWidth()
             .height(57.dp)
             .clip(containerShape),
-
         shape = containerShape,
         color = bg,
         shadowElevation = 6.dp
@@ -66,8 +69,7 @@ fun HomeBottomPill(
                     contentAlignment = Alignment.Center
                 ) {
                     Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Icon(
                             painter = painterResource(item.iconRes),
@@ -75,12 +77,19 @@ fun HomeBottomPill(
                             modifier = Modifier.size(22.dp),
                             tint = if (isSelected) Color.White else Color.Black
                         )
-                        Spacer(Modifier.height(4.dp).background(Color.Red))
+
+                        Spacer(modifier = Modifier.height(2.dp))
+
                         Text(
                             text = item.title,
-                            fontSize = 12.sp,
-                            color = if (isSelected) Color.White else text,
-                            textAlign = TextAlign.Center
+                            style = TextStyle(
+                                fontSize = 12.sp,
+                                fontFamily = FontFamily(Font(R.font.heebo_semibold)),
+                                fontWeight = FontWeight.W600,
+                                color = if (isSelected) Color.White else text,
+                                textAlign = TextAlign.Center,
+                                lineHeight = 12.sp,
+                            )
                         )
                     }
                 }

@@ -9,6 +9,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.amroad.passwkeeper.ui.tab.HomeBottomPill
 import com.amroad.passwkeeper.ui.tab.HomeTab
+import com.amroad.passwkeeper.ui.tab.screen.GeneratorScreen
 import com.amroad.passwkeeper.ui.tab.screen.SettingsTabScreen
 import com.amroad.passwkeeper.ui.tab.screen.VaultScreen
 
@@ -44,11 +45,11 @@ fun HomeScreen() {
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .navigationBarsPadding()
-                //.padding(horizontal = 18.dp, vertical = 18.dp)
+                .padding(horizontal = 16.dp)
         )
     }
 }
 
 
-@Composable private fun GeneratorScreen() { Box(Modifier.fillMaxSize()) { /* TODO */ } }
+
 

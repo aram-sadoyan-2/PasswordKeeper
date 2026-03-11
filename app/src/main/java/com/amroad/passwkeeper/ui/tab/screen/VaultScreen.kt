@@ -1,14 +1,18 @@
 package com.amroad.passwkeeper.ui.tab.screen
 
+import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -16,9 +20,12 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.amroad.passwkeeper.R
 import com.amroad.passwkeeper.data.VaultFolder
 import com.amroad.passwkeeper.ui.component.SearchWithEditBarIosStyle
 import com.amroad.passwkeeper.ui.component.VaultFolderSwipeItem
@@ -30,12 +37,21 @@ fun VaultScreen() {
             VaultFolder(1, "Password Vault", true),
             VaultFolder(2, "Work Accounts", false),
             VaultFolder(3, "Social Media", false),
-            VaultFolder(4, "Crypto Wallets", false),
-            VaultFolder(5, "Crypto Wallets", false),
-            VaultFolder(6, "Crypto Wallets", false),
-            VaultFolder(7, "Crypto Wallets", false),
-            VaultFolder(8, "Crypto Wallets", false),
         )
+    }
+
+    var openedFolder by remember { mutableStateOf<VaultFolder?>(null) }
+
+    BackHandler(enabled = openedFolder != null) {
+        openedFolder = null
+    }
+
+    if (openedFolder != null) {
+        FolderPreviewScreen(
+            folderTitle = openedFolder!!.title,
+            onBackClick = { openedFolder = null }
+        )
+        return
     }
 
     val pinnedFolders = folders.filter { it.pinned }
@@ -65,7 +81,9 @@ fun VaultScreen() {
                     subtitle = "Folder",
                     isPinned = folder.pinned,
                     isSelected = false,
-                    onClick = {},
+                    onClick = {
+                        openedFolder = folder
+                    },
                     onSelect = {},
                     onPinClick = {
                         val index = folders.indexOfFirst { it.id == folder.id }
@@ -103,7 +121,9 @@ fun VaultScreen() {
                     subtitle = "Folder",
                     isPinned = folder.pinned,
                     isSelected = false,
-                    onClick = {},
+                    onClick = {
+                        openedFolder = folder
+                    },
                     onSelect = {},
                     onPinClick = {
                         val index = folders.indexOfFirst { it.id == folder.id }
@@ -117,6 +137,32 @@ fun VaultScreen() {
                         folders.remove(folder)
                     }
                 )
+            }
+
+            item {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 0.dp, bottom = 24.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_add_folder),
+                        contentDescription = "Add new folder",
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clickable {
+                                val nextId = (folders.maxOfOrNull { it.id } ?: 0) + 1
+                                folders.add(
+                                    VaultFolder(
+                                        id = nextId,
+                                        title = "New Folder",
+                                        pinned = false
+                                    )
+                                )
+                            }
+                    )
+                }
             }
         }
     }
