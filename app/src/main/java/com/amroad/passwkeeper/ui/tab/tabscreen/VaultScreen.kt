@@ -17,6 +17,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -26,9 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.amroad.passwkeeper.R
-import com.amroad.passwkeeper.data.local.entity.FolderEntity
 import com.amroad.passwkeeper.ui.component.SearchScreen
-import com.amroad.passwkeeper.ui.component.SearchWithEditBarIosStyle
 import com.amroad.passwkeeper.ui.component.VaultFolderSwipeItem
 import com.amroad.passwkeeper.ui.screen.home.HomeViewModel
 import org.koin.androidx.compose.koinViewModel
@@ -40,19 +39,21 @@ fun VaultScreen(
     val uiState by viewModel.uiState.collectAsState()
     val folders = uiState.folders
 
-    var openedFolder by remember { mutableStateOf<FolderEntity?>(null) }
+    var openedFolderId by remember { mutableStateOf<Long?>(null) }
     var search by remember { mutableStateOf("") }
 
-    BackHandler(enabled = openedFolder != null) {
-        openedFolder = null
+    BackHandler(enabled = openedFolderId != null) {
+        openedFolderId = null
     }
 
-    val currentFolder = openedFolder
-    if (currentFolder != null) {
-        FolderPreviewScreen(
-            folderId = currentFolder.id,
-            onBackClick = { openedFolder = null }
-        )
+    val currentFolderId = openedFolderId
+    if (currentFolderId != null) {
+        key(currentFolderId) {
+            FolderPreviewScreen(
+                folderId = currentFolderId,
+                onBackClick = { openedFolderId = null }
+            )
+        }
         return
     }
 
@@ -92,7 +93,7 @@ fun VaultScreen(
                     isPinned = folder.isPinned,
                     isSelected = false,
                     onClick = {
-                        openedFolder = folder
+                        openedFolderId = folder.id
                     },
                     onSelect = {},
                     onPinClick = {
@@ -133,7 +134,7 @@ fun VaultScreen(
                     isPinned = folder.isPinned,
                     isSelected = false,
                     onClick = {
-                        openedFolder = folder
+                        openedFolderId = folder.id
                     },
                     onSelect = {},
                     onPinClick = {

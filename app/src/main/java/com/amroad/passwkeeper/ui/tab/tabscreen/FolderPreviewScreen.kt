@@ -42,6 +42,7 @@ fun FolderPreviewScreen(
     onBackClick: () -> Unit
 ) {
     val viewModel: FolderDetailsViewModel = koinViewModel(
+        key = "folder_details_$folderId",
         parameters = { parametersOf(folderId) }
     )
 
