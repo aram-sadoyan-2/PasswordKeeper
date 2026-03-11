@@ -1,4 +1,4 @@
-package com.amroad.passwkeeper.ui.tab.screen
+package com.amroad.passwkeeper.ui.tab.tabscreen
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
