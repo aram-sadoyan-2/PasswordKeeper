@@ -32,7 +32,7 @@ fun FolderPreviewTopBar(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 24.dp, vertical = 12.dp),
+            .padding(horizontal = 24.dp, vertical = 0.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(

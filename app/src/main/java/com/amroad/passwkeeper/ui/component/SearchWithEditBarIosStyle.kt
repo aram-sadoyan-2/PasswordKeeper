@@ -42,7 +42,7 @@ fun SearchWithEditBarIosStyle(
         horizontalArrangement = Arrangement.spacedBy(14.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        SearchField(
+        AppSearchField(
             value = value,
             onValueChange = onValueChange,
             placeholder = placeholder,
@@ -76,7 +76,7 @@ fun SearchWithEditBarIosStyle(
 }
 
 @Composable
-private fun SearchField(
+fun AppSearchField(
     value: String,
     onValueChange: (String) -> Unit,
     placeholder: String,
