@@ -70,6 +70,7 @@ fun VaultFolderCard(
             .background(bgColor.value)
             .clickable(
                 interactionSource = interactionSource,
+                indication = null,
                 onClick = onClick
             )
             .padding(start = 11.dp, end = 26.dp),
