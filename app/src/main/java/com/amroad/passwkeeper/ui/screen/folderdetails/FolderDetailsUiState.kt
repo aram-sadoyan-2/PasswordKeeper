@@ -127,7 +127,7 @@ class FolderDetailsViewModel(
 
     fun togglePin(itemId: Long) {
         viewModelScope.launch {
-            repository.togglePin(itemId)
+            repository.toggleItemPin(itemId)
         }
     }
 }

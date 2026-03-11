@@ -27,23 +27,30 @@ class VaultRepository(
 
     suspend fun createFolder(name: String): Long {
         val now = System.currentTimeMillis()
-        return vaultDao.insertFolder(
+
+        val folderId = vaultDao.insertFolder(
             FolderEntity(
                 name = name,
                 createdAt = now,
                 updatedAt = now
             )
         )
-    }
 
-    suspend fun renameFolder(folderId: Long, newName: String) {
-        val oldFolder = vaultDao.getFolderById(folderId) ?: return
-        vaultDao.updateFolder(
-            oldFolder.copy(
-                name = newName,
-                updatedAt = System.currentTimeMillis()
+        vaultDao.insertItem(
+            VaultItemEntity(
+                folderId = folderId,
+                title = "title",
+                notePrimaryName = "notes",
+                notePrimaryValue = "",
+                noteSecondaryName = "notes",
+                noteSecondaryValue = "",
+                noteAdditional = "notes",
+                createdAt = now,
+                updatedAt = now
             )
         )
+
+        return folderId
     }
 
     suspend fun deleteFolder(folder: FolderEntity) {
@@ -114,13 +121,29 @@ class VaultRepository(
         vaultDao.deleteItemById(itemId)
     }
 
-    suspend fun togglePin(itemId: Long) {
+    suspend fun toggleItemPin(itemId: Long) {
         val oldItem = vaultDao.getItemById(itemId) ?: return
         vaultDao.updateItem(
             oldItem.copy(
                 isPinned = !oldItem.isPinned,
                 updatedAt = System.currentTimeMillis()
             )
+        )
+    }
+
+    suspend fun renameFolder(folderId: Long, newName: String) {
+        val oldFolder = vaultDao.getFolderById(folderId) ?: return
+        vaultDao.updateFolder(
+            oldFolder.copy(
+                name = newName,
+                updatedAt = System.currentTimeMillis()
+            )
+        )
+    }
+
+    suspend fun updateFolder(folder: FolderEntity) {
+        vaultDao.updateFolder(
+            folder.copy(updatedAt = System.currentTimeMillis())
         )
     }
 }

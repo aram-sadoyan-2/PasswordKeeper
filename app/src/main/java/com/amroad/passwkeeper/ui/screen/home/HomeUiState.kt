@@ -55,4 +55,14 @@ class HomeViewModel(
             repository.deleteFolder(folder)
         }
     }
+
+    fun togglePin(folder: FolderEntity) {
+        viewModelScope.launch {
+            repository.updateFolder(
+                folder.copy(
+                    isPinned = !folder.isPinned
+                )
+            )
+        }
+    }
 }
