@@ -48,7 +48,7 @@ fun SwipeActionsRow(
                     top = 12.dp,
                     bottom = 12.dp
                 ),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(3.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             ActionPill(
@@ -82,13 +82,13 @@ private fun ActionPill(
         modifier = Modifier
             .fillMaxHeight()
             .wrapContentWidth()
-            .clip(RoundedCornerShape(24.dp))
+            .clip(RoundedCornerShape(16.dp))
             .background(background)
             .clickable { onClick() },
         contentAlignment = Alignment.Center
     ) {
         Text(
-            modifier = Modifier.padding(horizontal = 4.dp),
+            modifier = Modifier.padding(horizontal = 6.dp),
             text = text,
             style = TextStyle(
                 fontSize = 14.sp,

@@ -1,6 +1,5 @@
 package com.amroad.passwkeeper.ui.tab
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -41,7 +40,7 @@ fun HomeBottomPill(
     Surface(
         modifier = modifier
             .fillMaxWidth()
-            .height(74.dp)
+            .height(57.dp)
             .clip(containerShape),
 
         shape = containerShape,
@@ -51,7 +50,7 @@ fun HomeBottomPill(
         Row(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(6.dp),
+                .padding(2.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             items.forEach { item ->
@@ -76,7 +75,7 @@ fun HomeBottomPill(
                             modifier = Modifier.size(22.dp),
                             tint = if (isSelected) Color.White else Color.Black
                         )
-                        Spacer(Modifier.height(4.dp))
+                        Spacer(Modifier.height(4.dp).background(Color.Red))
                         Text(
                             text = item.title,
                             fontSize = 12.sp,
