@@ -90,7 +90,6 @@ class VaultRepository(
         noteSecondaryName: String,
         noteSecondaryValue: String,
         noteAdditional: String,
-        isPinned: Boolean
     ) {
         val oldItem = vaultDao.getItemById(itemId) ?: return
         vaultDao.updateItem(
@@ -101,7 +100,6 @@ class VaultRepository(
                 noteSecondaryName = noteSecondaryName,
                 noteSecondaryValue = noteSecondaryValue,
                 noteAdditional = noteAdditional,
-                isPinned = isPinned,
                 updatedAt = System.currentTimeMillis()
             )
         )
@@ -121,15 +119,6 @@ class VaultRepository(
         vaultDao.deleteItemById(itemId)
     }
 
-    suspend fun toggleItemPin(itemId: Long) {
-        val oldItem = vaultDao.getItemById(itemId) ?: return
-        vaultDao.updateItem(
-            oldItem.copy(
-                isPinned = !oldItem.isPinned,
-                updatedAt = System.currentTimeMillis()
-            )
-        )
-    }
 
     suspend fun renameFolder(folderId: Long, newName: String) {
         val oldFolder = vaultDao.getFolderById(folderId) ?: return

@@ -56,7 +56,7 @@ interface VaultDao {
     @Query("""
         SELECT * FROM vault_items
         WHERE folderId = :folderId
-        ORDER BY isPinned DESC, updatedAt DESC
+        ORDER BY updatedAt DESC
     """)
     fun getItemsByFolder(folderId: Long): Flow<List<VaultItemEntity>>
 
@@ -71,7 +71,7 @@ interface VaultDao {
             OR noteSecondaryValue LIKE '%' || :query || '%'
             OR noteAdditional LIKE '%' || :query || '%'
           )
-        ORDER BY isPinned DESC, updatedAt DESC
+        ORDER BY updatedAt DESC
     """)
     fun searchItems(folderId: Long, query: String): Flow<List<VaultItemEntity>>
 }

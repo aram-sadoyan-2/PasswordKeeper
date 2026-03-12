@@ -103,7 +103,6 @@ class FolderDetailsViewModel(
         noteSecondaryName: String,
         noteSecondaryValue: String,
         noteAdditional: String,
-        isPinned: Boolean
     ) {
         viewModelScope.launch {
             repository.updateItem(
@@ -114,7 +113,6 @@ class FolderDetailsViewModel(
                 noteSecondaryName = noteSecondaryName,
                 noteSecondaryValue = noteSecondaryValue,
                 noteAdditional = noteAdditional,
-                isPinned = isPinned
             )
         }
     }
@@ -125,9 +123,5 @@ class FolderDetailsViewModel(
         }
     }
 
-    fun togglePin(itemId: Long) {
-        viewModelScope.launch {
-            repository.toggleItemPin(itemId)
-        }
-    }
+
 }
