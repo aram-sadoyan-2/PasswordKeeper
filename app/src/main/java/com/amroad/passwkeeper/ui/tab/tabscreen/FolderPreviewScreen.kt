@@ -3,13 +3,17 @@ package com.amroad.passwkeeper.ui.tab.tabscreen
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -25,7 +29,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -34,6 +42,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import com.amroad.passwkeeper.R
 import com.amroad.passwkeeper.ui.component.AppSearchField
 import com.amroad.passwkeeper.ui.component.FolderItemRow
@@ -41,9 +50,6 @@ import com.amroad.passwkeeper.ui.component.FolderPreviewTopBar
 import com.amroad.passwkeeper.ui.screen.folderdetails.FolderDetailsViewModel
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
-import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.foundation.gestures.detectDragGestures
-import androidx.compose.ui.input.pointer.pointerInput
 
 @Composable
 fun FolderPreviewScreen(
@@ -74,7 +80,7 @@ fun FolderPreviewScreen(
             .background(Color.White)
             .clickable(
                 indication = null,
-                interactionSource = remember { androidx.compose.foundation.interaction.MutableInteractionSource() }
+                interactionSource = remember { MutableInteractionSource() }
             ) {
                 focusManager.clearFocus()
             }
@@ -142,68 +148,90 @@ fun FolderPreviewScreen(
                     )
                 )
             }
-
         }
 
-
-
-        LazyColumn(
+        Box(
             modifier = Modifier
                 .weight(1f)
                 .fillMaxWidth()
-                .pointerInput(Unit) {
-                    detectDragGestures(
-                        onDragStart = {
-                            focusManager.clearFocus()
-                        }
-                    ) { _, _ -> }
-                },
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+                .clipToBounds()
+                .background(Color.White)
         ) {
-            items(
-                items = items,
-                key = { it.id }
-            ) { item ->
-                FolderItemRow(
-                    item = item,
-                    isHidden = isHidden,
-                    isGlobalEditMode = isEditMode,
-                    globalEditChangeKey = editModeChangeKey,
-                    onDeleteClick = {
-                        viewModel.deleteItem(item)
-                    },
-                    modifier = Modifier.padding(horizontal = 22.dp)
-                )
-            }
-
-            item {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 8.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Image(
-                        painter = painterResource(R.drawable.ic_add_notegroup),
-                        contentDescription = "Add item",
-                        modifier = Modifier
-                            .size(58.dp)
-                            .clickable {
-                                viewModel.createItem(
-                                    title = "Title",
-                                    notePrimaryName = "Notes",
-                                    notePrimaryValue = "",
-                                    noteSecondaryName = "Notes",
-                                    noteSecondaryValue = "",
-                                    noteAdditional = "Notes"
-                                )
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .pointerInput(Unit) {
+                        detectDragGestures(
+                            onDragStart = {
+                                focusManager.clearFocus()
                             }
+                        ) { _, _ -> }
+                    },
+                contentPadding = PaddingValues(
+                    top = 0.dp,
+                    bottom = 120.dp
+                ),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                items(
+                    items = items,
+                    key = { it.id }
+                ) { item ->
+                    FolderItemRow(
+                        item = item,
+                        isHidden = isHidden,
+                        isGlobalEditMode = isEditMode,
+                        globalEditChangeKey = editModeChangeKey,
+                        onDeleteClick = {
+                            viewModel.deleteItem(item)
+                        },
+                        modifier = Modifier.padding(horizontal = 22.dp)
                     )
                 }
+
+                item {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 8.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Image(
+                            painter = painterResource(R.drawable.ic_add_notegroup),
+                            contentDescription = "Add item",
+                            modifier = Modifier
+                                .size(58.dp)
+                                .clickable {
+                                    viewModel.createItem(
+                                        title = "Title",
+                                        notePrimaryName = "Notes",
+                                        notePrimaryValue = "",
+                                        noteSecondaryName = "Notes",
+                                        noteSecondaryValue = "",
+                                        noteAdditional = "Notes"
+                                    )
+                                }
+                        )
+                    }
+                }
             }
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(110.dp)
+                    .align(Alignment.BottomCenter)
+                    .zIndex(1f)
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                Color.Transparent,
+                                Color.White,
+                                Color.White
+                            )
+                        )
+                    )
+            )
         }
-
-
-
     }
 }

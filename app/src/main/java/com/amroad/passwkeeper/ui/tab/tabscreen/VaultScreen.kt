@@ -7,8 +7,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -25,6 +27,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -33,13 +37,12 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import com.amroad.passwkeeper.R
 import com.amroad.passwkeeper.ui.component.SearchScreen
 import com.amroad.passwkeeper.ui.component.VaultFolderSwipeItem
 import com.amroad.passwkeeper.ui.screen.home.HomeViewModel
 import org.koin.androidx.compose.koinViewModel
-import androidx.compose.ui.draw.clipToBounds
-import androidx.compose.ui.graphics.Brush
 
 @Composable
 fun VaultScreen(
@@ -98,103 +101,122 @@ fun VaultScreen(
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .padding(top = 12.dp, bottom = 12.dp)
-
         )
 
-        LazyColumn(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .imePadding(),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+                .clipToBounds()
+                .background(Color(0xFFE2E2E2))
         ) {
-            items(
-                items = pinnedFolders,
-                key = { it.id }
-            ) { folder ->
-                VaultFolderSwipeItem(
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                    title = folder.name,
-                    subtitle = "Folder",
-                    isPinned = folder.isPinned,
-                    isSelected = false,
-                    onClick = {
-                        openedFolderId = folder.id
-                    },
-                    onSelect = {},
-                    onPinClick = {
-                        viewModel.togglePin(folder)
-                    },
-                    onRename = {
-                        viewModel.renameFolder(folder.id, "${folder.name} Renamed")
-                    },
-                    onCopy = {
-                        viewModel.createFolder("${folder.name} Copy")
-                    },
-                    onDelete = {
-                        viewModel.deleteFolder(folder)
-                    }
-                )
-            }
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .imePadding(),
+                contentPadding = PaddingValues(
+                    top = 12.dp,
+                    bottom = 100.dp
+                ),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                items(
+                    items = pinnedFolders,
+                    key = { it.id }
+                ) { folder ->
+                    VaultFolderSwipeItem(
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        title = folder.name,
+                        subtitle = "Folder",
+                        isPinned = folder.isPinned,
+                        isSelected = false,
+                        onClick = { openedFolderId = folder.id },
+                        onSelect = {},
+                        onPinClick = { viewModel.togglePin(folder) },
+                        onRename = {
+                            viewModel.renameFolder(folder.id, "${folder.name} Renamed")
+                        },
+                        onCopy = {
+                            viewModel.createFolder("${folder.name} Copy")
+                        },
+                        onDelete = {
+                            viewModel.deleteFolder(folder)
+                        }
+                    )
+                }
 
-            if (pinnedFolders.isNotEmpty() && unpinnedFolders.isNotEmpty()) {
+                if (pinnedFolders.isNotEmpty() && unpinnedFolders.isNotEmpty()) {
+                    item {
+                        HorizontalDivider(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp, vertical = 4.dp),
+                            thickness = 1.dp,
+                            color = Color(0xFFBDBDBD)
+                        )
+                    }
+                }
+
+                items(
+                    items = unpinnedFolders,
+                    key = { it.id }
+                ) { folder ->
+                    VaultFolderSwipeItem(
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        title = folder.name,
+                        subtitle = "Folder",
+                        isPinned = folder.isPinned,
+                        isSelected = false,
+                        onClick = { openedFolderId = folder.id },
+                        onSelect = {},
+                        onPinClick = { viewModel.togglePin(folder) },
+                        onRename = {
+                            viewModel.renameFolder(folder.id, "${folder.name} Renamed")
+                        },
+                        onCopy = {
+                            viewModel.createFolder("${folder.name} Copy")
+                        },
+                        onDelete = {
+                            viewModel.deleteFolder(folder)
+                        }
+                    )
+                }
+
                 item {
-                    HorizontalDivider(
+                    Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 4.dp),
-                        thickness = 1.dp,
-                        color = Color(0xFFBDBDBD)
-                    )
-                }
-            }
-
-            items(
-                items = unpinnedFolders,
-                key = { it.id }
-            ) { folder ->
-                VaultFolderSwipeItem(
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                    title = folder.name,
-                    subtitle = "Folder",
-                    isPinned = folder.isPinned,
-                    isSelected = false,
-                    onClick = {
-                        openedFolderId = folder.id
-                    },
-                    onSelect = {},
-                    onPinClick = {
-                        viewModel.togglePin(folder)
-                    },
-                    onRename = {
-                        viewModel.renameFolder(folder.id, "${folder.name} Renamed")
-                    },
-                    onCopy = {
-                        viewModel.createFolder("${folder.name} Copy")
-                    },
-                    onDelete = {
-                        viewModel.deleteFolder(folder)
+                            .padding(top = 10.dp, bottom = 24.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_add_folder),
+                            contentDescription = "Add new folder",
+                            modifier = Modifier
+                                .size(40.dp)
+                                .clickable {
+                                    viewModel.createFolder("New Folder")
+                                }
+                        )
                     }
-                )
-            }
-
-            item {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 10.dp, bottom = 24.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_add_folder),
-                        contentDescription = "Add new folder",
-                        modifier = Modifier
-                            .size(40.dp)
-                            .clickable {
-                                viewModel.createFolder("New Folder")
-                            }
-                    )
                 }
             }
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(150.dp)
+                    .align(Alignment.BottomCenter)
+                    .zIndex(1f)
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                Color.Transparent,
+                                Color(0xFFE2E2E2),
+                                Color(0xFFE2E2E2)
+                            )
+                        )
+                    )
+            )
         }
     }
 }

@@ -4,6 +4,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.relocation.BringIntoViewRequester
@@ -68,7 +70,7 @@ fun FolderItemRow(
             .background(
                 color = Color.White,
             )
-            .padding(horizontal = 0.dp, vertical = 18.dp),
+            .padding(horizontal = 0.dp, vertical = 4.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
 
@@ -147,7 +149,6 @@ fun FolderItemRow(
                 modifier = Modifier.padding(start = 12.dp)
             )
 
-            Spacer(modifier = Modifier.height(2.dp))
 
             Row(
                 verticalAlignment = Alignment.CenterVertically  // 1st Email type input
@@ -166,7 +167,7 @@ fun FolderItemRow(
                     modifier = Modifier.weight(1f)
                 )
 
-                Spacer(modifier = Modifier.width(14.dp))
+                Spacer(modifier = Modifier.width(18.dp))
 
                 CopyButton(
                     onClick = {
@@ -175,7 +176,7 @@ fun FolderItemRow(
                 )
             }
 
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
             ItemEditableText(
                 text = secondaryName,
@@ -184,8 +185,6 @@ fun FolderItemRow(
                 modifier = Modifier.padding(start = 12.dp)
 
             )
-
-            Spacer(modifier = Modifier.height(2.dp))
 
             Row(
                 verticalAlignment = Alignment.CenterVertically
@@ -204,7 +203,7 @@ fun FolderItemRow(
                     modifier = Modifier.weight(1f)
                 )
 
-                Spacer(modifier = Modifier.width(14.dp))
+                Spacer(modifier = Modifier.width(18.dp))
 
                 CopyButton(
                     onClick = {
@@ -213,8 +212,8 @@ fun FolderItemRow(
                 )
             }
 
-            if (additionalNote.isNotBlank() || isEditMode) {
-                Spacer(modifier = Modifier.height(18.dp))
+            if (additionalNote.isNotBlank() || isEditMode) {    /// Bottom Note
+                Spacer(modifier = Modifier.height(12.dp))
 
                 ItemEditableText(
                     text = additionalNote,
@@ -225,13 +224,13 @@ fun FolderItemRow(
 
             // DELETE TextButton
             if (isEditMode) {
-                Spacer(modifier = Modifier.height(22.dp))
+                Spacer(modifier = Modifier.height(14.dp))
 
                 Text(
                     text = "Delete",
-                    color = Color(0xFFFF3B30),
+                    color = Color(0xFFFF3535),
                     style = TextStyle(
-                        fontSize = 18.sp,
+                        fontSize = 16.sp,
                         fontFamily = FontFamily(Font(R.font.heebo_bold)),
                         fontWeight = FontWeight.W700
                     ),
@@ -340,7 +339,7 @@ private fun ValueWithTrailingIcon(
                 color = Color(0xFFE8E8E8),
                 shape = RoundedCornerShape(4.dp)
             )
-            .padding(horizontal = 14.dp, vertical = 6.dp)
+            .padding(vertical = 5.dp).padding(start = 10.dp, end = 18.dp, )
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -384,7 +383,14 @@ private fun ValueWithTrailingIcon(
             Image(
                 painter = painterResource(trailingIconRes),
                 contentDescription = null,
-                modifier = Modifier.clickable { onTrailingClick() }
+                modifier = Modifier
+                    .size(20.dp)
+                    .clickable(
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() }
+                    ) {
+                        onTrailingClick()
+                    }
             )
         }
     }
