@@ -45,6 +45,8 @@ import com.amroad.passwkeeper.ui.component.SearchScreen
 import com.amroad.passwkeeper.ui.component.VaultFolderSwipeItem
 import com.amroad.passwkeeper.ui.screen.home.HomeViewModel
 import org.koin.androidx.compose.koinViewModel
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.ui.platform.LocalFocusManager
 
 @Composable
 fun VaultScreen(
@@ -59,6 +61,7 @@ fun VaultScreen(
 
     var showRenameDialog by remember { mutableStateOf(false) }
     var folderToRename by remember { mutableStateOf<FolderEntity?>(null) }
+    val focusManager = LocalFocusManager.current
 
     BackHandler(enabled = openedFolderId != null) {
         openedFolderId = null
@@ -78,7 +81,10 @@ fun VaultScreen(
     val filteredFolders = if (search.isBlank()) {
         folders
     } else {
-        folders.filter { it.name.contains(search, ignoreCase = true) }
+        folders.filter {
+            it.name.contains(search, ignoreCase = true) ||
+                    it.subtitle.orEmpty().contains(search, ignoreCase = true)
+        }
     }
 
     val pinnedFolders = filteredFolders.filter { it.isPinned }
@@ -88,6 +94,12 @@ fun VaultScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFFE2E2E2))
+            .clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() }
+            ) {
+                focusManager.clearFocus()
+            }
             .padding(top = 64.dp)
     ) {
         SearchScreen(

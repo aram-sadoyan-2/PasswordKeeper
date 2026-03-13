@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.window.Dialog
@@ -151,6 +152,7 @@ private fun PopupEditText(
                 fontSize = 16.sp
             ),
             modifier = Modifier.weight(1f),
+            cursorBrush = SolidColor(Color(0xFF1D42D9)),
             decorationBox = { innerTextField ->
                 if (value.text.isEmpty()) {
                     Text(

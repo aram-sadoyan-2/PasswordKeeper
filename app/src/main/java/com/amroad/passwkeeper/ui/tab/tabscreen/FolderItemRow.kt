@@ -32,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -301,6 +302,7 @@ private fun ItemEditableText(
                     fontWeight = if (isTitle) FontWeight.W700 else FontWeight.W400,
                     color = Color.Black
                 ),
+                cursorBrush = SolidColor(Color(0xFF1D42D9)),
                 modifier = Modifier
                     .fillMaxWidth()
                     .onFocusEvent { focusState ->
@@ -372,6 +374,7 @@ private fun ValueWithTrailingIcon(
                         fontWeight = FontWeight.W400,
                         color = Color.Black
                     ),
+                    cursorBrush = SolidColor(Color(0xFF1D42D9)),
                     modifier = Modifier
                         .weight(1f)
                         .onFocusEvent { focusState ->

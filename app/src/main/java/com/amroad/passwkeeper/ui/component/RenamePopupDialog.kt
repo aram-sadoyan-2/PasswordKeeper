@@ -25,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
@@ -154,6 +155,7 @@ private fun PopupEditText(
                 fontSize = 16.sp
             ),
             modifier = Modifier.weight(1f),
+            cursorBrush = SolidColor(Color(0xFF1D42D9)),
             decorationBox = { innerTextField ->
                 if (value.text.isEmpty()) {
                     Text(
