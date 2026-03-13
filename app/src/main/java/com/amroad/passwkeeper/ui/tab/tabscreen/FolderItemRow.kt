@@ -60,19 +60,16 @@ fun FolderItemRow(
         modifier = modifier
             .fillMaxWidth()
             .background(
-                color = Color(0xFFF3F3F3),
-                shape = RoundedCornerShape(18.dp)
+                color = Color.White,
             )
-            .padding(horizontal = 18.dp, vertical = 18.dp),
+            .padding(horizontal = 0.dp, vertical = 18.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        var isLocalEditMode by remember(item.id) { mutableStateOf(false) }
 
         LaunchedEffect(globalEditChangeKey) {
             isLocalEditMode = false
         }
 
-        val isEditMode = isGlobalEditMode || isLocalEditMode
 
         Column(
             modifier = Modifier.weight(1f)
@@ -101,14 +98,16 @@ fun FolderItemRow(
                                 fontFamily = FontFamily(Font(R.font.heebo_bold)),
                                 fontWeight = FontWeight.W700
                             ),
-                            modifier = Modifier.clickable {
+                            modifier = Modifier
+                                .clickable {
                                 isLocalEditMode = false
                             }
                         )
                     } else {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.clickable {
+                            modifier = Modifier
+                                .clickable {
                                 isLocalEditMode = true
                             }
                         ) {
@@ -133,18 +132,19 @@ fun FolderItemRow(
                 }
             }
 
-            Spacer(modifier = Modifier.height(18.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
             ItemEditableText(
                 text = primaryName,
                 isEditMode = isEditMode,
-                onValueChange = { primaryName = it }
+                onValueChange = { primaryName = it },
+                modifier = Modifier.padding(start = 12.dp)
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(2.dp))
 
             Row(
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically  // 1st Email type input
             ) {
                 ValueWithTrailingIcon(
                     value = if (isHidden) "*************" else primaryValue,
@@ -174,10 +174,12 @@ fun FolderItemRow(
             ItemEditableText(
                 text = secondaryName,
                 isEditMode = isEditMode,
-                onValueChange = { secondaryName = it }
+                onValueChange = { secondaryName = it },
+                modifier = Modifier.padding(start = 12.dp)
+
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(2.dp))
 
             Row(
                 verticalAlignment = Alignment.CenterVertically
@@ -226,9 +228,20 @@ fun FolderItemRow(
                         fontFamily = FontFamily(Font(R.font.heebo_bold)),
                         fontWeight = FontWeight.W700
                     ),
-                    modifier = Modifier.clickable { onDeleteClick() }
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .clickable { onDeleteClick() }
                 )
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(1.dp)
+                    .background(Color(0xFFE3E3E3))
+            )
         }
     }
 }
@@ -269,7 +282,7 @@ private fun ItemEditableText(
             )
         } else {
             Text(
-                text = text,
+                text = "text1111",
                 color = Color.Black,
                 style = TextStyle(
                     fontSize = if (isTitle) 22.sp else 16.sp,
@@ -297,9 +310,9 @@ private fun ValueWithTrailingIcon(
         modifier = modifier
             .background(
                 color = Color(0xFFE8E8E8),
-                shape = RoundedCornerShape(8.dp)
+                shape = RoundedCornerShape(4.dp)
             )
-            .padding(horizontal = 14.dp, vertical = 12.dp)
+            .padding(horizontal = 14.dp, vertical = 6.dp)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -350,7 +363,7 @@ private fun CopyButton(
                 shape = RoundedCornerShape(24.dp)
             )
             .clickable { onClick() }
-            .padding(horizontal = 16.dp, vertical = 10.dp),
+            .padding(horizontal = 10.dp, vertical = 10.dp),
         contentAlignment = Alignment.Center
     ) {
         Text(

@@ -66,7 +66,7 @@ fun FolderPreviewScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFE2E2E2))
+            .background(Color.White)
             .padding(top = 66.dp)
     ) {
         FolderPreviewTopBar(
@@ -154,7 +154,7 @@ fun FolderPreviewScreen(
                     onDeleteClick = {
                         viewModel.deleteItem(item)
                     },
-                    modifier = Modifier.padding(horizontal = 16.dp)
+                    modifier = Modifier.padding(horizontal = 22.dp)
                 )
             }
         }
