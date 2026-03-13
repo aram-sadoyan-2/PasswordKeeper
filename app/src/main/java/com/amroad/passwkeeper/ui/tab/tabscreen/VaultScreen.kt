@@ -115,7 +115,7 @@ fun VaultScreen(
             onEditClick = {
                 isSwipeMode = !isSwipeMode
             },
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)
+            modifier = Modifier.padding(vertical = 12.dp).padding(start = 26.dp, end = 10.dp)
         )
 
         Text(
@@ -153,7 +153,7 @@ fun VaultScreen(
                     key = { it.id }
                 ) { folder ->
                     VaultFolderSwipeItem(
-                        modifier = Modifier.padding(horizontal = 16.dp),
+                        modifier = Modifier.padding(horizontal = 6.dp),
                         title = folder.name,
                         subtitle = folder.subtitle ?: "Folder",
                         isPinned = folder.isPinned,
@@ -197,7 +197,7 @@ fun VaultScreen(
                     key = { it.id }
                 ) { folder ->
                     VaultFolderSwipeItem(
-                        modifier = Modifier.padding(horizontal = 16.dp),
+                        modifier = Modifier.padding(horizontal = 6.dp),
                         title = folder.name,
                         subtitle = folder.subtitle ?: "Folder",
                         isPinned = folder.isPinned,
