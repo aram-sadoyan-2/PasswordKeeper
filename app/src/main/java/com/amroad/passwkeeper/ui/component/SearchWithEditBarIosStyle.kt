@@ -33,6 +33,7 @@ import com.amroad.passwkeeper.R
 fun SearchWithEditBarIosStyle(
     value: String,
     onValueChange: (String) -> Unit,
+    editText: String = "Edit",
     onEditClick: () -> Unit,
     modifier: Modifier = Modifier,
     placeholder: String = "Search",
@@ -62,7 +63,7 @@ fun SearchWithEditBarIosStyle(
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = "Edit",
+                text = editText,
                 style = TextStyle(
                     fontSize = 16.sp,
                     fontFamily = FontFamily(Font(R.font.heebo_semibold)),

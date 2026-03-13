@@ -8,12 +8,15 @@ import com.amroad.passwkeeper.ui.component.SearchWithEditBarIosStyle
 fun SearchScreen(
     value: String,
     onValueChange: (String) -> Unit,
+    isEditMode: Boolean,
+    onEditClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     SearchWithEditBarIosStyle(
         value = value,
         onValueChange = onValueChange,
-        onEditClick = {},
+        editText = if (isEditMode) "Done" else "Edit",
+        onEditClick = onEditClick,
         modifier = modifier
     )
 }

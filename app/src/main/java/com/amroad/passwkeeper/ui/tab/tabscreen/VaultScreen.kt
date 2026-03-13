@@ -53,6 +53,7 @@ fun VaultScreen(
 
     var openedFolderId by remember { mutableStateOf<Long?>(null) }
     var search by remember { mutableStateOf("") }
+    var isSwipeMode by remember { mutableStateOf(false) }
 
     BackHandler(enabled = openedFolderId != null) {
         openedFolderId = null
@@ -87,6 +88,10 @@ fun VaultScreen(
         SearchScreen(
             value = search,
             onValueChange = { search = it },
+            isEditMode = isSwipeMode,
+            onEditClick = {
+                isSwipeMode = !isSwipeMode
+            },
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)
         )
 
@@ -130,6 +135,7 @@ fun VaultScreen(
                         isPinned = folder.isPinned,
                         isSelected = false,
                         onClick = { openedFolderId = folder.id },
+                        isSwipeMode = isSwipeMode,
                         onSelect = {},
                         onPinClick = { viewModel.togglePin(folder) },
                         onRename = {
@@ -167,6 +173,7 @@ fun VaultScreen(
                         isPinned = folder.isPinned,
                         isSelected = false,
                         onClick = { openedFolderId = folder.id },
+                        isSwipeMode = isSwipeMode,
                         onSelect = {},
                         onPinClick = { viewModel.togglePin(folder) },
                         onRename = {

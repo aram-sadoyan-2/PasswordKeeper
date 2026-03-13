@@ -7,6 +7,7 @@ import androidx.compose.foundation.gestures.AnchoredDraggableState
 import androidx.compose.foundation.gestures.DraggableAnchors
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.anchoredDraggable
+import androidx.compose.foundation.gestures.animateTo
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -40,6 +41,7 @@ fun VaultFolderSwipeItem(
     subtitle: String = "Folder",
     isPinned: Boolean,
     isSelected: Boolean,
+    isSwipeMode: Boolean,
     onClick: () -> Unit,
     onSelect: () -> Unit,
     onPinClick: () -> Unit,
@@ -52,7 +54,6 @@ fun VaultFolderSwipeItem(
     val decayAnimation = rememberSplineBasedDecay<Float>()
     val itemHeight = 96.dp
 
-    // swipe distance = visible actions width only
     val swipeWidth = 200.dp
     val swipeWidthPx = with(density) { swipeWidth.toPx() }
 
@@ -83,6 +84,14 @@ fun VaultFolderSwipeItem(
                 DragValue.Open at -actionsWidthPx
             }
         )
+    }
+
+    LaunchedEffect(isSwipeMode) {
+        if (isSwipeMode) {
+            state.animateTo(DragValue.Open)
+        } else {
+            state.animateTo(DragValue.Closed)
+        }
     }
 
     Box(
