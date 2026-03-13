@@ -37,6 +37,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.amroad.passwkeeper.R
@@ -51,8 +53,7 @@ fun FolderItemRow(
     globalEditChangeKey: Int,
     onDeleteClick: () -> Unit,
     modifier: Modifier = Modifier,
-)
-{
+) {
     var isLocalEditMode by remember(item.id) { mutableStateOf(false) }
     val isEditMode = isGlobalEditMode || isLocalEditMode
 
@@ -63,22 +64,31 @@ fun FolderItemRow(
     var secondaryValue by remember(item.id, item.updatedAt) { mutableStateOf(item.noteSecondaryValue) }
     var additionalNote by remember(item.id, item.updatedAt) { mutableStateOf(item.noteAdditional) }
 
+    var primaryHiddenOverride by remember(item.id) { mutableStateOf<Boolean?>(null) }
+    var secondaryHiddenOverride by remember(item.id) { mutableStateOf<Boolean?>(null) }
+
+    val isPrimaryHidden = primaryHiddenOverride ?: isHidden
+    val isSecondaryHidden = secondaryHiddenOverride ?: isHidden
+
+    LaunchedEffect(globalEditChangeKey) {
+        isLocalEditMode = false
+    }
+
+    LaunchedEffect(isHidden) {
+        primaryHiddenOverride = null
+        secondaryHiddenOverride = null
+    }
+
+    val maskedPrimaryValue = "*".repeat(primaryValue.length.coerceAtLeast(1))
+    val maskedSecondaryValue = "*".repeat(secondaryValue.length.coerceAtLeast(1))
 
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .background(
-                color = Color.White,
-            )
+            .background(color = Color.White)
             .padding(horizontal = 0.dp, vertical = 4.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-
-        LaunchedEffect(globalEditChangeKey) {
-            isLocalEditMode = false
-        }
-
-
         Column(
             modifier = Modifier.weight(1f)
         ) {
@@ -106,16 +116,14 @@ fun FolderItemRow(
                                 fontFamily = FontFamily(Font(R.font.heebo_bold)),
                                 fontWeight = FontWeight.W700
                             ),
-                            modifier = Modifier
-                                .clickable {
+                            modifier = Modifier.clickable {
                                 isLocalEditMode = false
                             }
                         )
                     } else {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .clickable {
+                            modifier = Modifier.clickable {
                                 isLocalEditMode = true
                             }
                         ) {
@@ -149,21 +157,22 @@ fun FolderItemRow(
                 modifier = Modifier.padding(start = 12.dp)
             )
 
-
             Row(
-                verticalAlignment = Alignment.CenterVertically  // 1st Email type input
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 ValueWithTrailingIcon(
-                    value = if (isHidden) "*************" else primaryValue,
                     realValue = primaryValue,
                     isEditMode = isEditMode,
-                    trailingIconRes = if (isHidden) {
+                    isHidden = isPrimaryHidden,
+                    trailingIconRes = if (isPrimaryHidden) {
                         R.drawable.ic_password_hidden
                     } else {
                         R.drawable.ic_password_shown
                     },
                     onValueChange = { primaryValue = it },
-                    onTrailingClick = {},
+                    onTrailingClick = {
+                        primaryHiddenOverride = !(primaryHiddenOverride ?: isHidden)
+                    },
                     modifier = Modifier.weight(1f)
                 )
 
@@ -183,23 +192,24 @@ fun FolderItemRow(
                 isEditMode = isEditMode,
                 onValueChange = { secondaryName = it },
                 modifier = Modifier.padding(start = 12.dp)
-
             )
 
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 ValueWithTrailingIcon(
-                    value = if (isHidden) "*************" else secondaryValue,
                     realValue = secondaryValue,
                     isEditMode = isEditMode,
-                    trailingIconRes = if (isHidden) {
+                    isHidden = isSecondaryHidden,
+                    trailingIconRes = if (isSecondaryHidden) {
                         R.drawable.ic_password_hidden
                     } else {
                         R.drawable.ic_password_shown
                     },
                     onValueChange = { secondaryValue = it },
-                    onTrailingClick = {},
+                    onTrailingClick = {
+                        secondaryHiddenOverride = !(secondaryHiddenOverride ?: isHidden)
+                    },
                     modifier = Modifier.weight(1f)
                 )
 
@@ -212,7 +222,7 @@ fun FolderItemRow(
                 )
             }
 
-            if (additionalNote.isNotBlank() || isEditMode) {    /// Bottom Note
+            if (additionalNote.isNotBlank() || isEditMode) {
                 Spacer(modifier = Modifier.height(12.dp))
 
                 ItemEditableText(
@@ -222,7 +232,6 @@ fun FolderItemRow(
                 )
             }
 
-            // DELETE TextButton
             if (isEditMode) {
                 Spacer(modifier = Modifier.height(14.dp))
 
@@ -321,9 +330,9 @@ private fun ItemEditableText(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun ValueWithTrailingIcon(
-    value: String,
     realValue: String,
     isEditMode: Boolean,
+    isHidden: Boolean,
     trailingIconRes: Int,
     onValueChange: (String) -> Unit,
     onTrailingClick: () -> Unit,
@@ -339,7 +348,8 @@ private fun ValueWithTrailingIcon(
                 color = Color(0xFFE8E8E8),
                 shape = RoundedCornerShape(4.dp)
             )
-            .padding(vertical = 5.dp).padding(start = 10.dp, end = 18.dp, )
+            .padding(vertical = 5.dp)
+            .padding(start = 10.dp, end = 18.dp)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -351,6 +361,11 @@ private fun ValueWithTrailingIcon(
                     onValueChange = onValueChange,
                     singleLine = true,
                     maxLines = 1,
+                    visualTransformation = if (isHidden) {
+                        PasswordVisualTransformation()
+                    } else {
+                        VisualTransformation.None
+                    },
                     textStyle = TextStyle(
                         fontSize = 16.sp,
                         fontFamily = FontFamily(Font(R.font.heebo_regular)),
@@ -369,7 +384,7 @@ private fun ValueWithTrailingIcon(
                 )
             } else {
                 Text(
-                    text = value,
+                    text = if (isHidden) "•".repeat(realValue.length) else realValue,
                     color = Color.Black,
                     style = TextStyle(
                         fontSize = 16.sp,
