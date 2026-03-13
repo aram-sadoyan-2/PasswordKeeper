@@ -48,8 +48,12 @@ fun RenamePopupDialogSingle(
 ) {
     if (!visible) return
 
-    var title by remember { mutableStateOf(TextFieldValue(initialTitle)) }
-    var subtitle by remember { mutableStateOf(TextFieldValue(initialSubtitle)) }
+    var title by remember(initialTitle, visible) {
+        mutableStateOf(TextFieldValue(initialTitle))
+    }
+    var subtitle by remember(initialSubtitle, visible) {
+        mutableStateOf(TextFieldValue(initialSubtitle))
+    }
 
     Dialog(onDismissRequest = onDismiss) {
         Box(

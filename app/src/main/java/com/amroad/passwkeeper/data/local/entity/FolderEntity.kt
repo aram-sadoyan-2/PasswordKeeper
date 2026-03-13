@@ -8,7 +8,8 @@ data class FolderEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
     val name: String,
+    val subtitle: String = "",
     val isPinned: Boolean = false,
-    val createdAt: Long = System.currentTimeMillis(),
-    val updatedAt: Long = System.currentTimeMillis()
+    val createdAt: Long,
+    val updatedAt: Long
 )

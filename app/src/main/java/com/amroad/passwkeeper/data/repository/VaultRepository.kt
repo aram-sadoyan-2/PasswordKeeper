@@ -25,12 +25,13 @@ class VaultRepository(
     fun searchItems(folderId: Long, query: String): Flow<List<VaultItemEntity>> =
         vaultDao.searchItems(folderId, query)
 
-    suspend fun createFolder(name: String): Long {
+    suspend fun createFolder(): Long {
         val now = System.currentTimeMillis()
 
         val folderId = vaultDao.insertFolder(
             FolderEntity(
-                name = name,
+                name = "New Folder",
+                subtitle = "Folder",
                 createdAt = now,
                 updatedAt = now
             )
@@ -120,11 +121,16 @@ class VaultRepository(
     }
 
 
-    suspend fun renameFolder(folderId: Long, newName: String) {
+    suspend fun renameFolder(
+        folderId: Long,
+        newName: String,
+        newSubtitle: String
+    ) {
         val oldFolder = vaultDao.getFolderById(folderId) ?: return
         vaultDao.updateFolder(
             oldFolder.copy(
                 name = newName,
+                subtitle = newSubtitle,
                 updatedAt = System.currentTimeMillis()
             )
         )

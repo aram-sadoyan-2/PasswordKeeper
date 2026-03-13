@@ -1,6 +1,7 @@
 package com.amroad.passwkeeper.ui.component
 
 import androidx.annotation.DrawableRes
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Text
@@ -29,8 +31,6 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.window.Dialog
 import com.amroad.passwkeeper.R
@@ -47,8 +47,12 @@ fun RenamePopupDialog(
 ) {
     if (!visible) return
 
-    var title by remember { mutableStateOf(TextFieldValue(initialTitle)) }
-    var subtitle by remember { mutableStateOf(TextFieldValue(initialSubtitle)) }
+    var title by remember(visible, initialTitle) {
+        mutableStateOf(TextFieldValue(initialTitle))
+    }
+    var subtitle by remember(visible, initialSubtitle) {
+        mutableStateOf(TextFieldValue(initialSubtitle))
+    }
 
     Dialog(onDismissRequest = onDismiss) {
         Box(
@@ -89,7 +93,10 @@ fun RenamePopupDialog(
                     CircleIconButton(
                         iconRes = doneIconRes,
                         onClick = {
-                            onConfirm(title.text, subtitle.text)
+                            onConfirm(
+                                title.text.trim(),
+                                subtitle.text.trim()
+                            )
                         },
                         size = 36.dp
                     )
@@ -134,7 +141,8 @@ private fun PopupEditText(
             .fillMaxWidth()
             .clip(RoundedCornerShape(24.dp))
             .background(Color(0xFFF0F0F0))
-            .padding(vertical = 6.dp).padding(start = 20.dp, end = 8.dp),
+            .padding(vertical = 6.dp)
+            .padding(start = 20.dp, end = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         BasicTextField(
@@ -158,14 +166,10 @@ private fun PopupEditText(
             }
         )
 
-       // if (value.text.isNotEmpty()) {
-           // Spacer(modifier = Modifier.size(10.dp))
-
-            CircleIconButton(
-                iconRes = clearIconRes,
-                onClick = onClearClick,
-            )
-       // }
+        CircleIconButton(
+            iconRes = clearIconRes,
+            onClick = onClearClick,
+        )
     }
 }
 
@@ -188,20 +192,4 @@ private fun CircleIconButton(
             modifier = Modifier.size(size)
         )
     }
-}
-
-@Composable
-fun RenamePopupDemo() {
-    var showDialog by remember { mutableStateOf(true) }
-
-    RenamePopupDialog(
-        visible = showDialog,
-        initialTitle = "",
-        initialSubtitle = "",
-        onDismiss = { showDialog = false },
-        onConfirm = { title, subtitle ->
-            showDialog = false
-            // save data here
-        }
-    )
 }

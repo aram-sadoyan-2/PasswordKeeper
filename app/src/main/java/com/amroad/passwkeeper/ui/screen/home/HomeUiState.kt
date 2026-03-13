@@ -38,15 +38,19 @@ class HomeViewModel(
             .launchIn(viewModelScope)
     }
 
-    fun createFolder(name: String) {
+    fun createFolder() {
         viewModelScope.launch {
-            repository.createFolder(name)
+            repository.createFolder()
         }
     }
 
-    fun renameFolder(folderId: Long, newName: String) {
+    fun renameFolder(folderId: Long, title: String, subtitle: String) {
         viewModelScope.launch {
-            repository.renameFolder(folderId, newName)
+            repository.renameFolder(
+                folderId = folderId,
+                newName = title,
+                newSubtitle = subtitle
+            )
         }
     }
 

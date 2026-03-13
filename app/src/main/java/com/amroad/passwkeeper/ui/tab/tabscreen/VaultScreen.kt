@@ -39,6 +39,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import com.amroad.passwkeeper.R
+import com.amroad.passwkeeper.data.local.entity.FolderEntity
+import com.amroad.passwkeeper.ui.component.RenamePopupDialog
 import com.amroad.passwkeeper.ui.component.SearchScreen
 import com.amroad.passwkeeper.ui.component.VaultFolderSwipeItem
 import com.amroad.passwkeeper.ui.screen.home.HomeViewModel
@@ -54,6 +56,9 @@ fun VaultScreen(
     var openedFolderId by remember { mutableStateOf<Long?>(null) }
     var search by remember { mutableStateOf("") }
     var isSwipeMode by remember { mutableStateOf(false) }
+
+    var showRenameDialog by remember { mutableStateOf(false) }
+    var folderToRename by remember { mutableStateOf<FolderEntity?>(null) }
 
     BackHandler(enabled = openedFolderId != null) {
         openedFolderId = null
@@ -131,7 +136,7 @@ fun VaultScreen(
                     VaultFolderSwipeItem(
                         modifier = Modifier.padding(horizontal = 16.dp),
                         title = folder.name,
-                        subtitle = "Folder",
+                        subtitle = folder.subtitle ?: "Folder",
                         isPinned = folder.isPinned,
                         isSelected = false,
                         onClick = { openedFolderId = folder.id },
@@ -139,10 +144,11 @@ fun VaultScreen(
                         onSelect = {},
                         onPinClick = { viewModel.togglePin(folder) },
                         onRename = {
-                            viewModel.renameFolder(folder.id, "${folder.name} Renamed")
+                            folderToRename = folder
+                            showRenameDialog = true
                         },
                         onCopy = {
-                            viewModel.createFolder("${folder.name} Copy")
+                          //  viewModel.createFolder("${folder.name} Copy")
                         },
                         onDelete = {
                             viewModel.deleteFolder(folder)
@@ -169,7 +175,7 @@ fun VaultScreen(
                     VaultFolderSwipeItem(
                         modifier = Modifier.padding(horizontal = 16.dp),
                         title = folder.name,
-                        subtitle = "Folder",
+                        subtitle = folder.subtitle ?: "Folder",
                         isPinned = folder.isPinned,
                         isSelected = false,
                         onClick = { openedFolderId = folder.id },
@@ -177,10 +183,11 @@ fun VaultScreen(
                         onSelect = {},
                         onPinClick = { viewModel.togglePin(folder) },
                         onRename = {
-                            viewModel.renameFolder(folder.id, "${folder.name} Renamed")
+                            folderToRename = folder
+                            showRenameDialog = true
                         },
                         onCopy = {
-                            viewModel.createFolder("${folder.name} Copy")
+                          //  viewModel.createFolder("${folder.name} Copy")
                         },
                         onDelete = {
                             viewModel.deleteFolder(folder)
@@ -201,7 +208,7 @@ fun VaultScreen(
                             modifier = Modifier
                                 .size(40.dp)
                                 .clickable {
-                                    viewModel.createFolder("New Folder")
+                                    viewModel.createFolder()
                                 }
                         )
                     }
@@ -226,4 +233,26 @@ fun VaultScreen(
             )
         }
     }
+
+    RenamePopupDialog(
+        visible = showRenameDialog,
+        initialTitle = folderToRename?.name.orEmpty(),
+        initialSubtitle = folderToRename?.subtitle.orEmpty(),
+        onDismiss = {
+            showRenameDialog = false
+            folderToRename = null
+        },
+        onConfirm = { title, subtitle ->
+            val folder = folderToRename ?: return@RenamePopupDialog
+
+            viewModel.renameFolder(
+                folderId = folder.id,
+                title = title,
+                subtitle = subtitle
+            )
+
+            showRenameDialog = false
+            folderToRename = null
+        }
+    )
 }

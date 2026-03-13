@@ -67,6 +67,8 @@ fun FolderPreviewScreen(
     var isHidden by remember { mutableStateOf(false) }
 
     val folderTitle = uiState.folder?.folder?.name.orEmpty()
+    val folderSubtitle = uiState.folder?.folder?.subtitle.orEmpty()
+
     val items = uiState.items
 
     var isEditMode by remember { mutableStateOf(false) }
@@ -88,7 +90,7 @@ fun FolderPreviewScreen(
     ) {
         FolderPreviewTopBar(
             title = folderTitle,
-            subtitle = "Folder",
+            subtitle = folderSubtitle,
             onBackClick = onBackClick
         )
 
