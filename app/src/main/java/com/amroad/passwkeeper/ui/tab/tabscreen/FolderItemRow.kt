@@ -1,5 +1,6 @@
 package com.amroad.passwkeeper.ui.component
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -13,6 +14,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.relocation.BringIntoViewRequester
+import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Text
@@ -21,9 +24,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -34,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.amroad.passwkeeper.R
 import com.amroad.passwkeeper.data.local.entity.VaultItemEntity
+import kotlinx.coroutines.launch
 
 @Composable
 fun FolderItemRow(
@@ -247,6 +253,7 @@ fun FolderItemRow(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun ItemEditableText(
     text: String,
@@ -255,8 +262,13 @@ private fun ItemEditableText(
     modifier: Modifier = Modifier,
     isTitle: Boolean = false,
 ) {
+    val bringIntoViewRequester = remember { BringIntoViewRequester() }
+    val scope = rememberCoroutineScope()
+
     Row(
-        modifier = modifier.wrapContentHeight(),
+        modifier = modifier
+            .wrapContentHeight()
+            .bringIntoViewRequester(bringIntoViewRequester),
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (isEditMode) {
@@ -271,6 +283,8 @@ private fun ItemEditableText(
             BasicTextField(
                 value = text,
                 onValueChange = onValueChange,
+                singleLine = true,
+                maxLines = 1,
                 textStyle = TextStyle(
                     fontSize = if (isTitle) 22.sp else 16.sp,
                     fontFamily = FontFamily(
@@ -279,11 +293,19 @@ private fun ItemEditableText(
                     fontWeight = if (isTitle) FontWeight.W700 else FontWeight.W400,
                     color = Color.Black
                 ),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .onFocusEvent { focusState ->
+                        if (focusState.isFocused) {
+                            scope.launch {
+                                bringIntoViewRequester.bringIntoView()
+                            }
+                        }
+                    }
             )
         } else {
             Text(
-                text = "text1111",
+                text = text,
                 color = Color.Black,
                 style = TextStyle(
                     fontSize = if (isTitle) 22.sp else 16.sp,
@@ -297,6 +319,7 @@ private fun ItemEditableText(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun ValueWithTrailingIcon(
     value: String,
@@ -307,8 +330,12 @@ private fun ValueWithTrailingIcon(
     onTrailingClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val bringIntoViewRequester = remember { BringIntoViewRequester() }
+    val scope = rememberCoroutineScope()
+
     Box(
         modifier = modifier
+            .bringIntoViewRequester(bringIntoViewRequester)
             .background(
                 color = Color(0xFFE8E8E8),
                 shape = RoundedCornerShape(4.dp)
@@ -323,13 +350,23 @@ private fun ValueWithTrailingIcon(
                 BasicTextField(
                     value = realValue,
                     onValueChange = onValueChange,
+                    singleLine = true,
+                    maxLines = 1,
                     textStyle = TextStyle(
                         fontSize = 16.sp,
                         fontFamily = FontFamily(Font(R.font.heebo_regular)),
                         fontWeight = FontWeight.W400,
                         color = Color.Black
                     ),
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier
+                        .weight(1f)
+                        .onFocusEvent { focusState ->
+                            if (focusState.isFocused) {
+                                scope.launch {
+                                    bringIntoViewRequester.bringIntoView()
+                                }
+                            }
+                        }
                 )
             } else {
                 Text(

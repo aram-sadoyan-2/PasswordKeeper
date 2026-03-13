@@ -41,6 +41,9 @@ import com.amroad.passwkeeper.ui.component.FolderPreviewTopBar
 import com.amroad.passwkeeper.ui.screen.folderdetails.FolderDetailsViewModel
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.ui.input.pointer.pointerInput
 
 @Composable
 fun FolderPreviewScreen(
@@ -63,10 +66,18 @@ fun FolderPreviewScreen(
     var isEditMode by remember { mutableStateOf(false) }
     var editModeChangeKey by remember { mutableStateOf(0) }
 
+    val focusManager = LocalFocusManager.current
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
+            .clickable(
+                indication = null,
+                interactionSource = remember { androidx.compose.foundation.interaction.MutableInteractionSource() }
+            ) {
+                focusManager.clearFocus()
+            }
             .padding(top = 66.dp)
     ) {
         FolderPreviewTopBar(
@@ -139,7 +150,14 @@ fun FolderPreviewScreen(
         LazyColumn(
             modifier = Modifier
                 .weight(1f)
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .pointerInput(Unit) {
+                    detectDragGestures(
+                        onDragStart = {
+                            focusManager.clearFocus()
+                        }
+                    ) { _, _ -> }
+                },
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             items(
@@ -157,30 +175,35 @@ fun FolderPreviewScreen(
                     modifier = Modifier.padding(horizontal = 22.dp)
                 )
             }
+
+            item {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.ic_add_notegroup),
+                        contentDescription = "Add item",
+                        modifier = Modifier
+                            .size(58.dp)
+                            .clickable {
+                                viewModel.createItem(
+                                    title = "Title",
+                                    notePrimaryName = "Notes",
+                                    notePrimaryValue = "",
+                                    noteSecondaryName = "Notes",
+                                    noteSecondaryValue = "",
+                                    noteAdditional = "Notes"
+                                )
+                            }
+                    )
+                }
+            }
         }
 
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 0.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Image(
-                painter = painterResource(R.drawable.ic_add_notegroup),
-                contentDescription = "Add item",
-                modifier = Modifier
-                    .size(58.dp)
-                    .clickable {
-                        viewModel.createItem(
-                            title = "Title2",
-                            notePrimaryName = "Notes2",
-                            notePrimaryValue = "",
-                            noteSecondaryName = "Notes2",
-                            noteSecondaryValue = "",
-                            noteAdditional = "Notes2"
-                        )
-                    }
-            )
-        }
+
+
     }
 }

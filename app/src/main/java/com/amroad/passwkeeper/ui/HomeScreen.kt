@@ -32,7 +32,7 @@ fun HomeScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(bottom = 110.dp) // space for pill
+
         ) {
             when (tab) {
                 HomeTab.VAULT -> VaultScreen()
