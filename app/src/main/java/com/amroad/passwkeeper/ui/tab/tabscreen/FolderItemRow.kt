@@ -169,7 +169,7 @@ fun FolderItemRow(
                 )
             }
 
-            Spacer(modifier = Modifier.height(18.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
             ItemEditableText(
                 text = secondaryName,
@@ -217,6 +217,7 @@ fun FolderItemRow(
                 )
             }
 
+            // DELETE TextButton
             if (isEditMode) {
                 Spacer(modifier = Modifier.height(22.dp))
 
