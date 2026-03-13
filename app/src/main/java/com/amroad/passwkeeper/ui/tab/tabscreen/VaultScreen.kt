@@ -4,6 +4,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
@@ -24,12 +26,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -44,9 +48,8 @@ import com.amroad.passwkeeper.ui.component.RenamePopupDialog
 import com.amroad.passwkeeper.ui.component.SearchScreen
 import com.amroad.passwkeeper.ui.component.VaultFolderSwipeItem
 import com.amroad.passwkeeper.ui.screen.home.HomeViewModel
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.ui.platform.LocalFocusManager
 
 @Composable
 fun VaultScreen(
@@ -61,7 +64,10 @@ fun VaultScreen(
 
     var showRenameDialog by remember { mutableStateOf(false) }
     var folderToRename by remember { mutableStateOf<FolderEntity?>(null) }
+
     val focusManager = LocalFocusManager.current
+    val listState = rememberLazyListState()
+    val scope = rememberCoroutineScope()
 
     BackHandler(enabled = openedFolderId != null) {
         openedFolderId = null
@@ -132,6 +138,7 @@ fun VaultScreen(
                 .background(Color(0xFFE2E2E2))
         ) {
             LazyColumn(
+                state = listState,
                 modifier = Modifier
                     .fillMaxSize()
                     .imePadding(),
@@ -154,13 +161,18 @@ fun VaultScreen(
                         onClick = { openedFolderId = folder.id },
                         isSwipeMode = isSwipeMode,
                         onSelect = {},
-                        onPinClick = { viewModel.togglePin(folder) },
+                        onPinClick = {
+                            viewModel.togglePin(folder)
+                            scope.launch {
+                                listState.animateScrollToItem(0)
+                            }
+                        },
                         onRename = {
                             folderToRename = folder
                             showRenameDialog = true
                         },
                         onCopy = {
-                          //  viewModel.createFolder("${folder.name} Copy")
+                            // viewModel.createFolder("${folder.name} Copy")
                         },
                         onDelete = {
                             viewModel.deleteFolder(folder)
@@ -193,13 +205,18 @@ fun VaultScreen(
                         onClick = { openedFolderId = folder.id },
                         isSwipeMode = isSwipeMode,
                         onSelect = {},
-                        onPinClick = { viewModel.togglePin(folder) },
+                        onPinClick = {
+                            viewModel.togglePin(folder)
+                            scope.launch {
+                                listState.animateScrollToItem(0)
+                            }
+                        },
                         onRename = {
                             folderToRename = folder
                             showRenameDialog = true
                         },
                         onCopy = {
-                          //  viewModel.createFolder("${folder.name} Copy")
+                            // viewModel.createFolder("${folder.name} Copy")
                         },
                         onDelete = {
                             viewModel.deleteFolder(folder)
