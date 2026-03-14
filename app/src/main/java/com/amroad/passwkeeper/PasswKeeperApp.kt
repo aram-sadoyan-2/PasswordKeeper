@@ -1,6 +1,7 @@
 package com.amroad.passwkeeper
 
 import android.app.Application
+import com.amroad.passwkeeper.di.appModule
 import com.amroad.passwkeeper.di.databaseModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
@@ -13,6 +14,7 @@ class PasswKeeperApp : Application() {
             androidContext(this@PasswKeeperApp)
             modules(
                 databaseModule,
+                appModule
 //                repositoryModule,
 //                viewModelModule
             )
