@@ -30,7 +30,7 @@ fun PasscodeConfirmScreen(
             .padding(horizontal = 24.dp)
     ) {
         Spacer(Modifier.height(24.dp))
-        Text("←", modifier = Modifier.clickable { onBack() }, color = Color(0xFF2D2D2D))
+       // Text("←", modifier = Modifier.clickable { onBack() }, color = Color(0xFF2D2D2D))
 
         Spacer(Modifier.height(60.dp))
         Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {

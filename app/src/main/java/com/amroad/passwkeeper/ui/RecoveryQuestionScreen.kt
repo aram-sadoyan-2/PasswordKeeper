@@ -1,66 +1,153 @@
 package com.amroad.passwkeeper.ui
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.amroad.passwkeeper.R
 
 @Composable
 fun RecoveryQuestionScreen(
     onLater: () -> Unit,
     onDone: () -> Unit
 ) {
-    Column(Modifier
-        .fillMaxSize()
-        .padding(24.dp)) {
-        Spacer(Modifier.height(30.dp))
+    val questions = listOf(
+        "What was the name of your first school?",
+        "What city were you born in?",
+        "What was the name of your childhood pet?",
+        "What is the name of the street you grew up on?",
+        "What is your favorite book or movie?"
+    )
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFFE2E2E2))
+            .padding(vertical = 24.dp, horizontal = 16.dp)
+    ) {
+        Spacer(modifier = Modifier.height(30.dp))
+
         Text(
-            "Security & Password Recovery",
-            color = Color(0xFF1D42D9),
-            style = MaterialTheme.typography.titleMedium,
-            textAlign = TextAlign.Center
-        )
-        Spacer(Modifier.height(12.dp))
-        Text(
-            "For your security, the app does not store your password anywhere. " +
-                    "If you forget it, access to the app cannot be restored.\n\n" +
-                    "We recommend setting a security question to help you regain access if needed."
+            text = "Security & Password Recovery",
+            modifier = Modifier.fillMaxWidth(),
+            style = TextStyle(
+                fontSize = 20.sp,
+                fontFamily = FontFamily(Font(R.font.heebo_regular)),
+                fontWeight = FontWeight.W700,
+                color = Color(0xFF1D42D9),
+                textAlign = TextAlign.Center,
+            )
         )
 
-        Spacer(Modifier.height(22.dp))
-        Text("CHOOSE A SECURITY QUESTION", style = MaterialTheme.typography.labelMedium)
+        Spacer(modifier = Modifier.height(20.dp))
 
-        Spacer(Modifier.height(12.dp))
-        listOf(
-            "What was the name of your first school?",
-            "What city were you born in?",
-            "What was the name of your childhood pet?",
-            "What is the name of the street you grew up on?",
-            "What is your favorite book or movie?"
-        ).forEach {
+        Text(
+            text = "For your security, the app does not store your password anywhere. " +
+                    "If you forget it, access to the app cannot be restored.",
+            modifier = Modifier.fillMaxWidth(),
+            style = TextStyle(
+                fontSize = 14.sp,
+                fontFamily = FontFamily(Font(R.font.heebo_regular)),
+                fontWeight = FontWeight.W700,
+                color = Color(0xFF1D42D9),
+                textAlign = TextAlign.Center,
+                lineHeight = 22.sp
+            )
+        )
+
+        Spacer(modifier = Modifier.height(26.dp))
+
+        Text(
+            text = "We recommend setting a security question to help you regain access if needed.",
+            modifier = Modifier.fillMaxWidth(),
+            style = TextStyle(
+                fontSize = 14.sp,
+                fontFamily = FontFamily(Font(R.font.heebo_regular)),
+                fontWeight = FontWeight.W400,
+                color = Color(0xFF1D42D9),
+                textAlign = TextAlign.Center,
+                lineHeight = 22.sp
+            )
+        )
+
+        Spacer(modifier = Modifier.height(22.dp))
+
+        Text(
+            text = "CHOOSE A SECURITY QUESTION",
+            modifier = Modifier.fillMaxWidth(),
+            style = TextStyle(
+                fontSize = 15.sp,
+                fontFamily = FontFamily(Font(R.font.heebo_regular)),
+                fontWeight = FontWeight.W400,
+                color = Color(0xFF000000),
+                textAlign = TextAlign.Center
+            )
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        questions.forEach { question ->
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 6.dp)
-                    .clickable { /* open answer screen */ }
+                    .clickable {
+                        /* open answer screen */
+                    },
+                colors = CardDefaults.cardColors(
+                    containerColor = Color.White
+                )
             ) {
-                Row(Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)) {
-                    Text(it, modifier = Modifier.weight(1f))
-                    Text("›")
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 22.dp, vertical = 18.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Text(
+                        text = question,
+                        modifier = Modifier.weight(1f),
+                        style = TextStyle(
+                            fontSize = 15.sp,
+                            fontFamily = FontFamily(Font(R.font.heebo_regular)),
+                            fontWeight = FontWeight.W400,
+                            color = Color(0xFF000000),
+                            lineHeight = 20.sp
+                        )
+                    )
+
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_back_arrow),
+                        contentDescription = "Open question",
+                        modifier = Modifier.size(20.dp).rotate(180f)
+                    )
                 }
             }
-        }
-
-        Spacer(Modifier.weight(1f))
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            TextButton(onClick = onLater) { Text("Later") }
-            Button(onClick = onDone) { Text("Done") }
         }
     }
 }
