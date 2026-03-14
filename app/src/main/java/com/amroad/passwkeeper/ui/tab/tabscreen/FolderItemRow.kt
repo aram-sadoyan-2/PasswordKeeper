@@ -425,7 +425,7 @@ private fun CopyButton(
                 shape = RoundedCornerShape(24.dp)
             )
             .clickable { onClick() }
-            .padding(horizontal = 10.dp, vertical = 10.dp),
+            .padding(horizontal = 10.dp, vertical = 8.dp),
         contentAlignment = Alignment.Center
     ) {
         Text(
