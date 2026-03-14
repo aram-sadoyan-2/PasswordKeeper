@@ -52,6 +52,14 @@ fun FolderItemRow(
     isHidden: Boolean,
     isGlobalEditMode: Boolean,
     globalEditChangeKey: Int,
+    onSaveClick: (
+        title: String,
+        primaryName: String,
+        primaryValue: String,
+        secondaryName: String,
+        secondaryValue: String,
+        additionalNote: String
+    ) -> Unit,
     onDeleteClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -71,8 +79,35 @@ fun FolderItemRow(
     val isPrimaryHidden = primaryHiddenOverride ?: isHidden
     val isSecondaryHidden = secondaryHiddenOverride ?: isHidden
 
-    LaunchedEffect(globalEditChangeKey) {
-        isLocalEditMode = false
+    fun saveIfChanged() {
+        val isChanged =
+            title != item.title ||
+                    primaryName != item.notePrimaryName ||
+                    primaryValue != item.notePrimaryValue ||
+                    secondaryName != item.noteSecondaryName ||
+                    secondaryValue != item.noteSecondaryValue ||
+                    additionalNote != item.noteAdditional
+
+        if (isChanged) {
+            onSaveClick(
+                title,
+                primaryName,
+                primaryValue,
+                secondaryName,
+                secondaryValue,
+                additionalNote
+            )
+        }
+    }
+
+    var previousGlobalEditMode by remember(item.id) { mutableStateOf(isGlobalEditMode) }
+
+    LaunchedEffect(isGlobalEditMode) {
+        if (previousGlobalEditMode && !isGlobalEditMode) {
+            saveIfChanged()
+            isLocalEditMode = false
+        }
+        previousGlobalEditMode = isGlobalEditMode
     }
 
     LaunchedEffect(isHidden) {
@@ -115,6 +150,7 @@ fun FolderItemRow(
                                 fontWeight = FontWeight.W700
                             ),
                             modifier = Modifier.clickable {
+                                saveIfChanged()
                                 isLocalEditMode = false
                             }
                         )
@@ -155,9 +191,7 @@ fun FolderItemRow(
                 modifier = Modifier.padding(start = 12.dp)
             )
 
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 ValueWithTrailingIcon(
                     realValue = primaryValue,
                     isEditMode = isEditMode,
@@ -192,9 +226,7 @@ fun FolderItemRow(
                 modifier = Modifier.padding(start = 12.dp)
             )
 
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 ValueWithTrailingIcon(
                     realValue = secondaryValue,
                     isEditMode = isEditMode,

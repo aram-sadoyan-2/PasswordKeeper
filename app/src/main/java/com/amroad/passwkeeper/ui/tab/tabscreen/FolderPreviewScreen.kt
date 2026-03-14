@@ -184,6 +184,17 @@ fun FolderPreviewScreen(
                         isHidden = isHidden,
                         isGlobalEditMode = isEditMode,
                         globalEditChangeKey = editModeChangeKey,
+                        onSaveClick = { title, primaryName, primaryValue, secondaryName, secondaryValue, additionalNote ->
+                            viewModel.updateItem(
+                                itemId = item.id,
+                                title = title,
+                                notePrimaryName = primaryName,
+                                notePrimaryValue = primaryValue,
+                                noteSecondaryName = secondaryName,
+                                noteSecondaryValue = secondaryValue,
+                                noteAdditional = additionalNote
+                            )
+                        },
                         onDeleteClick = {
                             viewModel.deleteItem(item)
                         },
