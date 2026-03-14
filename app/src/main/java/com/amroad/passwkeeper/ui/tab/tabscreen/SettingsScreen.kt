@@ -11,9 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.IosShare
 
@@ -38,29 +36,6 @@ fun SettingsScreen(
             .fillMaxSize()
             .background(bg)
     ) {
-        // Top bar (back + centered title)
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 22.dp, start = 10.dp, end = 10.dp)
-        ) {
-            IconButton(
-                onClick = onBack,
-                modifier = Modifier.align(Alignment.CenterStart)
-            ) {
-                Icon(Icons.Filled.ArrowBack, contentDescription = "Back", tint = Color(0xFF2D2D2D))
-            }
-
-            Text(
-                text = "Settings",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.Center),
-                color = Color(0xFF9E9E9E),
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.titleMedium
-            )
-        }
 
         Column(
             modifier = Modifier

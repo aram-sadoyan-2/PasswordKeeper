@@ -42,12 +42,20 @@ import com.amroad.passwkeeper.data.local.entity.GeneratedPasswordEntity
 import org.koin.androidx.compose.koinViewModel
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import kotlinx.coroutines.launch
+import androidx.compose.ui.draw.shadow
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.zIndex
+import kotlin.math.roundToInt
 
 
 private val HeeboRegular = FontFamily(Font(R.font.heebo_regular))
@@ -167,37 +175,66 @@ fun GeneratorScreen(
             )
         }
 
-        Spacer(modifier = Modifier.height(48.dp))
+        Spacer(modifier = Modifier.height(42.dp))
 
-        LazyColumn(
-            state = listState,
-            verticalArrangement = Arrangement.spacedBy(10.dp),
+        Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-                .padding(horizontal = 22.dp)
+                .fillMaxSize()
+                .clipToBounds()
         ) {
-            items(
-                items = uiState.generatedPasswords,
-                key = { item -> item.id }
-            ) { item ->
-                GeneratedPasswordCard(
-                    item = item,
-                    onCopyClick = {
-                        clipboardManager.setText(AnnotatedString(item.password))
-                    },
-                    onAddToClick = {
-                    },
-                    onEditClick = {
+            LazyColumn(
+                state = listState,
+                verticalArrangement = Arrangement.spacedBy(10.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    //.weight(1f)
+                    .padding(horizontal = 22.dp),
+                contentPadding = PaddingValues(
+                    top = 12.dp,
+                    bottom = 120.dp
+                ),
+            ) {
+                items(
+                    items = uiState.generatedPasswords,
+                    key = { item -> item.id }
+                ) { item ->
+                    GeneratedPasswordCard(
+                        item = item,
+                        onCopyClick = {
+                            clipboardManager.setText(AnnotatedString(item.password))
+                        },
+                        onAddToClick = {
+                        },
+                        onEditClick = {
 
-                    }
-                )
+                        }
+                    )
+                }
             }
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(150.dp)
+                    .align(Alignment.BottomCenter)
+                    .zIndex(1f)
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                Color.Transparent,
+                                Color(0xFFE2E2E2),
+                                Color(0xFFE2E2E2)
+                            )
+                        )
+                    )
+            )
         }
+
     }
 }
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun PasswordLengthRow(
     value: Float,
@@ -221,33 +258,63 @@ private fun PasswordLengthRow(
 
             Slider(
                 value = value,
-                onValueChange = onValueChange,
+                onValueChange = { onValueChange(it.roundToInt().toFloat()) },
                 valueRange = 4f..20f,
-                steps = 20,
+                steps = 15,
                 modifier = Modifier
                     .weight(1f)
-                    .padding(start = 18.dp, end = 10.dp),
-                colors = SliderDefaults.colors(
-                    thumbColor = Color(0xFFE5E5E5),
-                    activeTrackColor = Color(0xFF2448D8),
-                    inactiveTrackColor = Color(0xFF2448D8)
-                )
+                    .padding(start = 18.dp, end = 0.dp),
+                thumb = {
+                    Box(
+                        modifier = Modifier
+                            .size(30.dp)
+                            .shadow(
+                                elevation = 8.dp,
+                                shape = CircleShape,
+                                clip = false
+                            )
+                            .background(
+                                color = Color(0xFFF3F3F3),
+                                shape = CircleShape
+                            )
+                    )
+                },
+                track = { sliderState ->
+                    SliderDefaults.Track(
+                        sliderState = sliderState,
+                        modifier = Modifier.height(4.dp),
+                        colors = SliderDefaults.colors(
+                            activeTrackColor = Color(0xFF2448D8),
+                            inactiveTrackColor = Color(0xFFCFCFCF),
+                            activeTickColor = Color.Transparent,
+                            inactiveTickColor = Color.Transparent
+                        ),
+                        drawStopIndicator = null,
+                        thumbTrackGapSize = 0.dp
+                    )
+                }
             )
 
-            Text(
-                text = value.toInt().toString(),
-                style = TextStyle(
-                    fontFamily = HeeboBold,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp,
-                    color = Color(0xFF111111)
+            Box(
+                modifier = Modifier.width(28.dp),
+                contentAlignment = Alignment.CenterEnd
+            ) {
+                Text(
+                    text = value.toInt().toString(),
+                    style = TextStyle(
+                        fontFamily = HeeboBold,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp,
+                        color = Color(0xFF111111)
+                    )
                 )
-            )
+            }
         }
 
         GeneratorDivider()
     }
 }
+
 
 @Composable
 private fun GeneratorOptionRow(
