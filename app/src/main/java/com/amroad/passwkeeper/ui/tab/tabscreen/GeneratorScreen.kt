@@ -39,7 +39,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.amroad.passwkeeper.R
 import com.amroad.passwkeeper.data.local.entity.GeneratedPasswordEntity
-import com.amroad.passwkeeper.ui.screen.home.HomeViewModel
 import org.koin.androidx.compose.koinViewModel
 
 private val HeeboRegular = FontFamily(Font(R.font.heebo_regular))
@@ -87,46 +86,49 @@ fun GeneratorScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFFE7E7E7))
-            .padding(horizontal = 24.dp, vertical = 20.dp)
+            .padding(horizontal = 0.dp).padding(top = 70.dp)
     ) {
-        PasswordLengthRow(
-            value = uiState.passwordLength,
-            onValueChange = viewModel::onPasswordLengthChange
-        )
+        Column(modifier = Modifier.padding(horizontal = 44.dp)) {
+            PasswordLengthRow(
+                value = uiState.passwordLength,
+                onValueChange = viewModel::onPasswordLengthChange
+            )
 
-        GeneratorOptionRow(
-            title = "Lowercase Letter",
-            checked = uiState.lowercaseEnabled,
-            onCheckedChange = viewModel::onLowercaseChange
-        )
+            GeneratorOptionRow(
+                title = "Lowercase Letter",
+                checked = uiState.lowercaseEnabled,
+                onCheckedChange = viewModel::onLowercaseChange
+            )
 
-        GeneratorOptionRow(
-            title = "Uppercase Letter",
-            checked = uiState.uppercaseEnabled,
-            onCheckedChange = viewModel::onUppercaseChange
-        )
+            GeneratorOptionRow(
+                title = "Uppercase Letter",
+                checked = uiState.uppercaseEnabled,
+                onCheckedChange = viewModel::onUppercaseChange
+            )
 
-        GeneratorOptionRow(
-            title = "Numbers",
-            checked = uiState.numbersEnabled,
-            onCheckedChange = viewModel::onNumbersChange
-        )
+            GeneratorOptionRow(
+                title = "Numbers",
+                checked = uiState.numbersEnabled,
+                onCheckedChange = viewModel::onNumbersChange
+            )
 
-        GeneratorOptionRow(
-            title = "Special Characters",
-            subtitle = "e.g. - #$%^&",
-            checked = uiState.specialEnabled,
-            onCheckedChange = viewModel::onSpecialChange
-        )
+            GeneratorOptionRow(
+                title = "Special Characters",
+                subtitle = "e.g. - #$%^&",
+                checked = uiState.specialEnabled,
+                onCheckedChange = viewModel::onSpecialChange
+            )
 
-        GeneratorOptionRow(
-            title = "Similar Characters",
-            subtitle = "e.g - O and 0",
-            checked = uiState.similarEnabled,
-            onCheckedChange = viewModel::onSimilarChange
-        )
+            GeneratorOptionRow(
+                title = "Similar Characters",
+                subtitle = "e.g - O and 0",
+                checked = uiState.similarEnabled,
+                onCheckedChange = viewModel::onSimilarChange
+            )
+        }
 
-        Spacer(modifier = Modifier.height(24.dp))
+
+        Spacer(modifier = Modifier.height(37.dp))
 
         Button(
             onClick = viewModel::generatePassword,
@@ -150,13 +152,16 @@ fun GeneratorScreen(
             )
         }
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(53.dp))
+
+
 
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(10.dp),
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
+                .padding(horizontal = 22.dp)
         ) {
             items(
                 items = uiState.generatedPasswords,
@@ -189,7 +194,7 @@ private fun PasswordLengthRow(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Lenght",
+                text = "Length",
                 style = TextStyle(
                     fontFamily = HeeboRegular,
                     fontSize = 16.sp,
