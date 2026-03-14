@@ -112,7 +112,10 @@ class PasscodeViewModel(
     fun isPasscodeEnabled(): Boolean = repo.isEnabled()
 
     fun isRecoveryQuestionSet(): Boolean = repo.isRecoveryQuestionSet()
-    fun markRecoveryQuestionSet() = repo.setRecoveryQuestionSet(true)
+
+    fun saveRecoveryQuestion(question: String, answer: String) {
+        repo.saveRecoveryQuestion(question, answer)
+    }
 }
 
 sealed class ConfirmResult {

@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,12 +13,19 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -28,12 +36,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import com.amroad.passwkeeper.R
+import com.amroad.passwkeeper.ui.component.RecoveryAnswerPopup
+import com.amroad.passwkeeper.viewmodel.PasscodeViewModel
 
 @Composable
 fun RecoveryQuestionScreen(
-    onLater: () -> Unit,
-    onDone: () -> Unit
+    vm: PasscodeViewModel,
+    onSaved: () -> Unit
 ) {
     val questions = listOf(
         "What was the name of your first school?",
@@ -42,6 +53,10 @@ fun RecoveryQuestionScreen(
         "What is the name of the street you grew up on?",
         "What is your favorite book or movie?"
     )
+
+    var selectedQuestion by remember { mutableStateOf<String?>(null) }
+    var answer by remember { mutableStateOf("") }
+    var answerError by remember { mutableStateOf<String?>(null) }
 
     Column(
         modifier = Modifier
@@ -66,8 +81,7 @@ fun RecoveryQuestionScreen(
         Spacer(modifier = Modifier.height(20.dp))
 
         Text(
-            text = "For your security, the app does not store your password anywhere. " +
-                    "If you forget it, access to the app cannot be restored.",
+            text = "For your security, the app does not store your password anywhere. If you forget it, access to the app cannot be restored.",
             modifier = Modifier.fillMaxWidth(),
             style = TextStyle(
                 fontSize = 14.sp,
@@ -115,13 +129,18 @@ fun RecoveryQuestionScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 6.dp)
+                    .clip(RoundedCornerShape(15.dp))
                     .clickable {
-                        /* open answer screen */
+                        selectedQuestion = question
+                        answer = ""
+                        answerError = null
                     },
+                shape = RoundedCornerShape(15.dp),
                 colors = CardDefaults.cardColors(
                     containerColor = Color.White
                 )
-            ) {
+            )
+            {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -144,10 +163,46 @@ fun RecoveryQuestionScreen(
                     Image(
                         painter = painterResource(id = R.drawable.ic_back_arrow),
                         contentDescription = "Open question",
-                        modifier = Modifier.size(20.dp).rotate(180f)
+                        modifier = Modifier
+                            .size(20.dp)
+                            .rotate(180f)
                     )
                 }
             }
         }
     }
+
+    selectedQuestion?.let { question ->
+        RecoveryAnswerPopup(
+            question = question,
+            answer = answer,
+            answerError = answerError,
+            onAnswerChange = {
+                answer = it
+                answerError = null
+            },
+            onDismiss = {
+                selectedQuestion = null
+                answer = ""
+                answerError = null
+            },
+            onSave = {
+                val trimmed = answer.trim()
+
+                if (trimmed.isBlank()) {
+                    answerError = "Answer cannot be empty"
+                    return@RecoveryAnswerPopup
+                }
+
+                vm.saveRecoveryQuestion(question, trimmed)
+
+                selectedQuestion = null
+                answer = ""
+                answerError = null
+
+                onSaved()
+            }
+        )
+    }
 }
+

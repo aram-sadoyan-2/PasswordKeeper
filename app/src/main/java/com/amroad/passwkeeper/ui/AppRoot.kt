@@ -59,13 +59,8 @@ fun AppRoot() {
 
         composable(Routes.Recovery) {
             RecoveryQuestionScreen(
-                onLater = {
-                    nav.navigate(Routes.Home) {
-                        popUpTo(Routes.Recovery) { inclusive = true }
-                    }
-                },
-                onDone = {
-                    vm.markRecoveryQuestionSet()
+                vm = vm,
+                onSaved = {
                     nav.navigate(Routes.Home) {
                         popUpTo(Routes.Recovery) { inclusive = true }
                     }
