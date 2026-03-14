@@ -23,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -51,6 +52,15 @@ import com.amroad.passwkeeper.ui.screen.folderdetails.FolderDetailsViewModel
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
+private data class EditableItemDraft(
+    val title: String,
+    val primaryName: String,
+    val primaryValue: String,
+    val secondaryName: String,
+    val secondaryValue: String,
+    val additionalNote: String,
+)
+
 @Composable
 fun FolderPreviewScreen(
     folderId: Long,
@@ -65,14 +75,13 @@ fun FolderPreviewScreen(
 
     var search by remember { mutableStateOf("") }
     var isHidden by remember { mutableStateOf(false) }
+    var isEditMode by remember { mutableStateOf(false) }
+
+    val editedItems = remember { mutableStateMapOf<Long, EditableItemDraft>() }
 
     val folderTitle = uiState.folder?.folder?.name.orEmpty()
     val folderSubtitle = uiState.folder?.folder?.subtitle.orEmpty()
-
     val items = uiState.items
-
-    var isEditMode by remember { mutableStateOf(false) }
-    var editModeChangeKey by remember { mutableStateOf(0) }
 
     val focusManager = LocalFocusManager.current
 
@@ -133,8 +142,23 @@ fun FolderPreviewScreen(
                     )
                     .defaultMinSize(minHeight = 30.dp)
                     .clickable {
-                        isEditMode = !isEditMode
-                        editModeChangeKey++
+                        if (isEditMode) {
+                            editedItems.forEach { (itemId, draft) ->
+                                viewModel.updateItem(
+                                    itemId = itemId,
+                                    title = draft.title,
+                                    notePrimaryName = draft.primaryName,
+                                    notePrimaryValue = draft.primaryValue,
+                                    noteSecondaryName = draft.secondaryName,
+                                    noteSecondaryValue = draft.secondaryValue,
+                                    noteAdditional = draft.additionalNote
+                                )
+                            }
+                            editedItems.clear()
+                            isEditMode = false
+                        } else {
+                            isEditMode = true
+                        }
                     }
                     .padding(horizontal = 18.dp),
                 contentAlignment = Alignment.Center
@@ -183,7 +207,16 @@ fun FolderPreviewScreen(
                         item = item,
                         isHidden = isHidden,
                         isGlobalEditMode = isEditMode,
-                        globalEditChangeKey = editModeChangeKey,
+                        onDraftChanged = { title, primaryName, primaryValue, secondaryName, secondaryValue, additionalNote ->
+                            editedItems[item.id] = EditableItemDraft(
+                                title = title,
+                                primaryName = primaryName,
+                                primaryValue = primaryValue,
+                                secondaryName = secondaryName,
+                                secondaryValue = secondaryValue,
+                                additionalNote = additionalNote
+                            )
+                        },
                         onSaveClick = { title, primaryName, primaryValue, secondaryName, secondaryValue, additionalNote ->
                             viewModel.updateItem(
                                 itemId = item.id,
@@ -194,8 +227,10 @@ fun FolderPreviewScreen(
                                 noteSecondaryValue = secondaryValue,
                                 noteAdditional = additionalNote
                             )
+                            editedItems.remove(item.id)
                         },
                         onDeleteClick = {
+                            editedItems.remove(item.id)
                             viewModel.deleteItem(item)
                         },
                         modifier = Modifier.padding(horizontal = 22.dp)

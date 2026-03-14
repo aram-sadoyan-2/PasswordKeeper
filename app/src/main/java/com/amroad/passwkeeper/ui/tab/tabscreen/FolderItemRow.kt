@@ -51,7 +51,14 @@ fun FolderItemRow(
     item: VaultItemEntity,
     isHidden: Boolean,
     isGlobalEditMode: Boolean,
-    globalEditChangeKey: Int,
+    onDraftChanged: (
+        title: String,
+        primaryName: String,
+        primaryValue: String,
+        secondaryName: String,
+        secondaryValue: String,
+        additionalNote: String
+    ) -> Unit,
     onSaveClick: (
         title: String,
         primaryName: String,
@@ -79,16 +86,17 @@ fun FolderItemRow(
     val isPrimaryHidden = primaryHiddenOverride ?: isHidden
     val isSecondaryHidden = secondaryHiddenOverride ?: isHidden
 
-    fun saveIfChanged() {
-        val isChanged =
-            title != item.title ||
-                    primaryName != item.notePrimaryName ||
-                    primaryValue != item.notePrimaryValue ||
-                    secondaryName != item.noteSecondaryName ||
-                    secondaryValue != item.noteSecondaryValue ||
-                    additionalNote != item.noteAdditional
+    fun isChanged(): Boolean {
+        return title != item.title ||
+                primaryName != item.notePrimaryName ||
+                primaryValue != item.notePrimaryValue ||
+                secondaryName != item.noteSecondaryName ||
+                secondaryValue != item.noteSecondaryValue ||
+                additionalNote != item.noteAdditional
+    }
 
-        if (isChanged) {
+    fun saveIfChanged() {
+        if (isChanged()) {
             onSaveClick(
                 title,
                 primaryName,
@@ -100,14 +108,33 @@ fun FolderItemRow(
         }
     }
 
-    var previousGlobalEditMode by remember(item.id) { mutableStateOf(isGlobalEditMode) }
+    LaunchedEffect(
+        title,
+        primaryName,
+        primaryValue,
+        secondaryName,
+        secondaryValue,
+        additionalNote,
+        isGlobalEditMode
+    ) {
+        if (isGlobalEditMode) {
+            if (isChanged()) {
+                onDraftChanged(
+                    title,
+                    primaryName,
+                    primaryValue,
+                    secondaryName,
+                    secondaryValue,
+                    additionalNote
+                )
+            }
+        }
+    }
 
     LaunchedEffect(isGlobalEditMode) {
-        if (previousGlobalEditMode && !isGlobalEditMode) {
-            saveIfChanged()
+        if (!isGlobalEditMode) {
             isLocalEditMode = false
         }
-        previousGlobalEditMode = isGlobalEditMode
     }
 
     LaunchedEffect(isHidden) {
