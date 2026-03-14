@@ -187,9 +187,6 @@ fun FolderPreviewScreen(
                         onDeleteClick = {
                             viewModel.deleteItem(item)
                         },
-//                        onToggleHidden = {
-//                            isHidden = !isHidden
-//                        },
                         modifier = Modifier.padding(horizontal = 22.dp)
                     )
                 }

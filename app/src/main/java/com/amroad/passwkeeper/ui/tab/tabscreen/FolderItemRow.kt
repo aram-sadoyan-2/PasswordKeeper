@@ -80,9 +80,6 @@ fun FolderItemRow(
         secondaryHiddenOverride = null
     }
 
-    val maskedPrimaryValue = "*".repeat(primaryValue.length.coerceAtLeast(1))
-    val maskedSecondaryValue = "*".repeat(secondaryValue.length.coerceAtLeast(1))
-
     Row(
         modifier = modifier
             .fillMaxWidth()
