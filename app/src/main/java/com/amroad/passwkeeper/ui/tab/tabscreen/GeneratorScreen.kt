@@ -40,6 +40,12 @@ import androidx.compose.ui.unit.sp
 import com.amroad.passwkeeper.R
 import com.amroad.passwkeeper.data.local.entity.GeneratedPasswordEntity
 import org.koin.androidx.compose.koinViewModel
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.runtime.remember
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
+
 
 private val HeeboRegular = FontFamily(Font(R.font.heebo_regular))
 private val HeeboMedium = FontFamily(Font(R.font.heebo_medium))
@@ -173,7 +179,10 @@ fun GeneratorScreen(
                         clipboardManager.setText(AnnotatedString(item.password))
                     },
                     onAddToClick = {
-                      //  onAddToClick(item)
+                        // onAddToClick(item)
+                    },
+                    onEditClick = {
+                        // edit item title or open edit dialog
                     }
                 )
             }
@@ -291,7 +300,8 @@ private fun GeneratorOptionRow(
 private fun GeneratedPasswordCard(
     item: GeneratedPasswordUi,
     onCopyClick: () -> Unit,
-    onAddToClick: () -> Unit
+    onAddToClick: () -> Unit,
+    onEditClick: () -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxWidth()
@@ -300,12 +310,20 @@ private fun GeneratedPasswordCard(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = "✎",
-                style = TextStyle(
-                    fontSize = 13.sp,
-                    color = Color(0xFF3A3A3A)
-                )
+            Image(
+                painter = painterResource(id = R.drawable.ic_edit),
+                contentDescription = "Edit",
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null
+                    ) {
+                        onEditClick()
+                    }
+                    .padding(6.dp)
+                    .width(14.dp)
+                    .height(14.dp)
             )
 
             Spacer(modifier = Modifier.width(4.dp))
@@ -388,6 +406,7 @@ private fun GeneratedPasswordCard(
         }
     }
 }
+
 
 @Composable
 private fun SmallActionButton(
