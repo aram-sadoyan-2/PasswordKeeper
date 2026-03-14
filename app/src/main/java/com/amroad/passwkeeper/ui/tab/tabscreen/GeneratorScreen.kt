@@ -42,9 +42,12 @@ import com.amroad.passwkeeper.data.local.entity.GeneratedPasswordEntity
 import org.koin.androidx.compose.koinViewModel
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import kotlinx.coroutines.launch
 
 
 private val HeeboRegular = FontFamily(Font(R.font.heebo_regular))
@@ -83,16 +86,18 @@ enum class PasswordStrength(
 @Composable
 fun GeneratorScreen(
     viewModel: GeneratorViewModel = koinViewModel()
-    //onAddToClick: (GeneratedPasswordUi) -> Unit = {}
 ) {
     val uiState = viewModel.uiState.collectAsState().value
     val clipboardManager = LocalClipboardManager.current
+    val listState = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFFE7E7E7))
-            .padding(horizontal = 0.dp).padding(top = 70.dp)
+            .padding(horizontal = 0.dp)
+            .padding(top = 70.dp)
     ) {
         Column(modifier = Modifier.padding(horizontal = 44.dp)) {
             PasswordLengthRow(
@@ -133,11 +138,15 @@ fun GeneratorScreen(
             )
         }
 
-
         Spacer(modifier = Modifier.height(37.dp))
 
         Button(
-            onClick = viewModel::generatePassword,
+            onClick = {
+                viewModel.generatePassword()
+                coroutineScope.launch {
+                    listState.animateScrollToItem(0)
+                }
+            },
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .width(184.dp)
@@ -158,11 +167,10 @@ fun GeneratorScreen(
             )
         }
 
-        Spacer(modifier = Modifier.height(53.dp))
-
-
+        Spacer(modifier = Modifier.height(48.dp))
 
         LazyColumn(
+            state = listState,
             verticalArrangement = Arrangement.spacedBy(10.dp),
             modifier = Modifier
                 .fillMaxWidth()
@@ -179,16 +187,16 @@ fun GeneratorScreen(
                         clipboardManager.setText(AnnotatedString(item.password))
                     },
                     onAddToClick = {
-                        // onAddToClick(item)
                     },
                     onEditClick = {
-                        // edit item title or open edit dialog
+
                     }
                 )
             }
         }
     }
 }
+
 
 @Composable
 private fun PasswordLengthRow(
@@ -214,8 +222,8 @@ private fun PasswordLengthRow(
             Slider(
                 value = value,
                 onValueChange = onValueChange,
-                valueRange = 4f..32f,
-                steps = 27,
+                valueRange = 4f..20f,
+                steps = 20,
                 modifier = Modifier
                     .weight(1f)
                     .padding(start = 18.dp, end = 10.dp),
