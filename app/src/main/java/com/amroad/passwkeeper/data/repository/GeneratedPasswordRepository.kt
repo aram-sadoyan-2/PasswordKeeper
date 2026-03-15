@@ -21,4 +21,18 @@ class GeneratedPasswordRepository(
     suspend fun clearGeneratedPasswords() {
         dao.clearGeneratedPasswords()
     }
+
+    suspend fun updateGeneratedPassword(
+        id: Long,
+        title: String,
+        password: String,
+        strength: String
+    ) {
+        dao.updateGeneratedPassword(
+            id = id,
+            title = title,
+            password = password,
+            strength = strength
+        )
+    }
 }

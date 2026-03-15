@@ -41,6 +41,9 @@ fun RenamePopupDialog(
     visible: Boolean,
     initialTitle: String = "",
     initialSubtitle: String = "",
+    dialogTitle: String = "Rename",
+    titlePlaceholder: String = "Title",
+    subtitlePlaceholder: String = "Subtitle",
     onDismiss: () -> Unit,
     onConfirm: (title: String, subtitle: String) -> Unit,
     @DrawableRes closeIconRes: Int = R.drawable.ic_popup_close,
@@ -81,7 +84,7 @@ fun RenamePopupDialog(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "Rename",
+                            text = dialogTitle,
                             style = TextStyle(
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Medium,
@@ -107,7 +110,7 @@ fun RenamePopupDialog(
 
                 PopupEditText(
                     value = title,
-                    placeholder = "Title",
+                    placeholder = titlePlaceholder,
                     clearIconRes = closeIconRes,
                     onValueChange = { title = it },
                     onClearClick = { title = TextFieldValue("") }
@@ -117,7 +120,7 @@ fun RenamePopupDialog(
 
                 PopupEditText(
                     value = subtitle,
-                    placeholder = "Subtitle",
+                    placeholder = subtitlePlaceholder,
                     clearIconRes = closeIconRes,
                     onValueChange = { subtitle = it },
                     onClearClick = { subtitle = TextFieldValue("") }

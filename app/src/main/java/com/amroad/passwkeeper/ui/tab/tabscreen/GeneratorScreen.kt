@@ -33,8 +33,11 @@ import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -55,6 +58,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import com.amroad.passwkeeper.R
 import com.amroad.passwkeeper.data.local.entity.GeneratedPasswordEntity
+import com.amroad.passwkeeper.ui.component.RenamePopupDialog
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import kotlin.math.roundToInt
@@ -102,11 +106,13 @@ fun GeneratorScreen(
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
 
+    var showEditDialog by remember { mutableStateOf(false) }
+    var editingItem by remember { mutableStateOf<GeneratedPasswordUi?>(null) }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFFE7E7E7))
-            .padding(horizontal = 0.dp)
             .padding(top = 70.dp)
     ) {
         Column(modifier = Modifier.padding(horizontal = 44.dp)) {
@@ -208,6 +214,8 @@ fun GeneratorScreen(
                         onAddToClick = {
                         },
                         onEditClick = {
+                            editingItem = item
+                            showEditDialog = true
                         }
                     )
                 }
@@ -231,6 +239,31 @@ fun GeneratorScreen(
             )
         }
     }
+
+    RenamePopupDialog(
+        visible = showEditDialog,
+        initialTitle = editingItem?.title.orEmpty(),
+        initialSubtitle = editingItem?.password.orEmpty(),
+        dialogTitle = "Edit Password",
+        titlePlaceholder = "Title",
+        subtitlePlaceholder = "Password",
+        onDismiss = {
+            showEditDialog = false
+            editingItem = null
+        },
+        onConfirm = { title, password ->
+            val item = editingItem ?: return@RenamePopupDialog
+
+            viewModel.updateGeneratedPassword(
+                id = item.id,
+                title = title,
+                password = password
+            )
+
+            showEditDialog = false
+            editingItem = null
+        }
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

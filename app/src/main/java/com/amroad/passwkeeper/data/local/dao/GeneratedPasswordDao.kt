@@ -21,4 +21,18 @@ interface GeneratedPasswordDao {
 
     @Query("DELETE FROM generated_passwords")
     suspend fun clearGeneratedPasswords()
+
+    @Query("""
+    UPDATE generated_passwords
+    SET title = :title,
+        password = :password,
+        strength = :strength
+    WHERE id = :id
+""")
+    suspend fun updateGeneratedPassword(
+        id: Long,
+        title: String,
+        password: String,
+        strength: String
+    )
 }

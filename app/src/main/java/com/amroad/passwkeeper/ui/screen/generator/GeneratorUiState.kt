@@ -104,4 +104,28 @@ class GeneratorViewModel(
             repository.deleteGeneratedPassword(id)
         }
     }
+
+    fun updateGeneratedPassword(
+        id: Long,
+        title: String,
+        password: String
+    ) {
+        viewModelScope.launch {
+            val strength = calculatePasswordStrength(
+                password = password,
+                useLowercase = password.any { it.isLowerCase() },
+                useUppercase = password.any { it.isUpperCase() },
+                useNumbers = password.any { it.isDigit() },
+                useSpecial = password.any { !it.isLetterOrDigit() }
+            )
+
+            repository.updateGeneratedPassword(
+                id = id,
+                title = title,
+                password = password,
+                strength = strength.name
+            )
+        }
+    }
+
 }
