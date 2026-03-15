@@ -122,7 +122,7 @@ private fun TopSettingsCard(
                     modifier = Modifier
                         .align(Alignment.BottomStart)
                         .fillMaxWidth()
-                        .padding(horizontal = 26.dp, vertical = 12.dp)
+                        .padding(horizontal = 24.dp, vertical = 12.dp)
                 )
             }
         }

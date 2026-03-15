@@ -48,7 +48,13 @@ fun PasscodeSetupScreen(
 
         Spacer(Modifier.weight(1f))
 
-        Button(onClick = onCancel) {
+        Button(
+            onClick = onCancel,
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF363636),
+                contentColor = Color.White
+            )
+        ) {
             Text("Cancel Passcode Setup")
         }
 
@@ -58,6 +64,6 @@ fun PasscodeSetupScreen(
             color = Color(0xFF7A7A7A),
             style = MaterialTheme.typography.bodySmall
         )
-        Spacer(Modifier.height(24.dp))
+        Spacer(Modifier.height(36.dp))
     }
 }

@@ -144,7 +144,7 @@ fun RecoveryQuestionScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 22.dp, vertical = 18.dp),
+                        .padding(horizontal = 22.dp, vertical = 16.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
@@ -156,7 +156,7 @@ fun RecoveryQuestionScreen(
                             fontFamily = FontFamily(Font(R.font.heebo_regular)),
                             fontWeight = FontWeight.W400,
                             color = Color(0xFF000000),
-                            lineHeight = 20.sp
+                            lineHeight = 16.sp
                         )
                     )
 
@@ -164,7 +164,7 @@ fun RecoveryQuestionScreen(
                         painter = painterResource(id = R.drawable.ic_back_arrow),
                         contentDescription = "Open question",
                         modifier = Modifier
-                            .size(20.dp)
+                            .size(30.dp)
                             .rotate(180f)
                     )
                 }

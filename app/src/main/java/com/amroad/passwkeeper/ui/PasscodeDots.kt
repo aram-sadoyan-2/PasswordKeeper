@@ -21,25 +21,37 @@ fun PasscodeDots(
     modifier: Modifier = Modifier
 ) {
     val spacing = 10.dp
+    val itemHeight = 48.dp
+    val maxItemWidth = 46.dp
 
-    BoxWithConstraints(modifier = modifier.fillMaxWidth()) {
-        val boxW = ((maxWidth - spacing * (total - 1)) / total).coerceAtMost(46.dp)
-        val boxH = 40.dp
+    BoxWithConstraints(
+        modifier = modifier.fillMaxWidth(),
+        contentAlignment = Alignment.Center
+    ) {
+        val itemWidth = ((maxWidth - spacing * (total - 1)) / total)
+            .coerceAtMost(maxItemWidth)
 
         Row(
-            modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(spacing, Alignment.CenterHorizontally),
             verticalAlignment = Alignment.CenterVertically
         ) {
             repeat(total) { index ->
                 Box(
                     modifier = Modifier
-                        .size(boxW, boxH)
-                        .background(Color(0xFF2D2D2D), RoundedCornerShape(10.dp)),
+                        .size(width = itemWidth, height = itemHeight)
+                        .background(
+                            color = Color(0xFF2D2D2D),
+                            shape = RoundedCornerShape(16.dp)
+                        ),
                     contentAlignment = Alignment.Center
                 ) {
                     if (index < filled) {
-                        Text("✱", fontSize = 22.sp, fontWeight = FontWeight.Bold, color = Color.White)
+                        Text(
+                            text = "✱",
+                            color = Color.White,
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Bold
+                        )
                     }
                 }
             }

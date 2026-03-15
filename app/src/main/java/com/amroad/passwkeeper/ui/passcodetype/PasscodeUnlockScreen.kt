@@ -32,7 +32,7 @@ fun PasscodeUnlockScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(Modifier.height(90.dp))
-        Text("Enter Passcode unlock", color = Color(0xFF1C1C1C))
+        Text("Enter Passcode to unlock", color = Color(0xFF1C1C1C))
         Spacer(Modifier.height(18.dp))
 
         PasscodeDots(
