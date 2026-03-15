@@ -116,6 +116,8 @@ class PasscodeViewModel(
     fun saveRecoveryQuestion(question: String, answer: String) {
         repo.saveRecoveryQuestion(question, answer)
     }
+
+    fun shouldRequirePassOnLaunch(): Boolean = repo.isRequirePassOnLaunch()
 }
 
 sealed class ConfirmResult {

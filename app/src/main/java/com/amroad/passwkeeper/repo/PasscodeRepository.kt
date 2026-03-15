@@ -15,14 +15,25 @@ class PasscodeRepository(private val prefs: SecurePrefs) {
         private const val KEY_RECOVERY_QUESTION = "recovery_question"
         private const val KEY_RECOVERY_ANSWER_SALT = "recovery_answer_salt"
         private const val KEY_RECOVERY_ANSWER_HASH = "recovery_answer_hash"
+
+        private const val KEY_REQUIRE_PASS_ON_LAUNCH = "require_pass_on_launch"
     }
 
     fun isEnabled(): Boolean = prefs.getBoolean(KEY_ENABLED, false)
+
+    fun setRequirePassOnLaunch(enabled: Boolean) {
+        prefs.putBoolean(KEY_REQUIRE_PASS_ON_LAUNCH, enabled)
+    }
+
+    fun isRequirePassOnLaunch(): Boolean {
+        return prefs.getBoolean(KEY_REQUIRE_PASS_ON_LAUNCH, true)
+    }
 
     fun disable() {
         prefs.putBoolean(KEY_ENABLED, false)
         prefs.clear(KEY_SALT)
         prefs.clear(KEY_HASH)
+        prefs.putBoolean(KEY_REQUIRE_PASS_ON_LAUNCH, false)
     }
 
     fun savePasscode(passcode: String) {
@@ -32,6 +43,7 @@ class PasscodeRepository(private val prefs: SecurePrefs) {
         prefs.putString(KEY_SALT, Base64.encodeToString(salt, Base64.NO_WRAP))
         prefs.putString(KEY_HASH, Base64.encodeToString(hash, Base64.NO_WRAP))
         prefs.putBoolean(KEY_ENABLED, true)
+        prefs.putBoolean(KEY_REQUIRE_PASS_ON_LAUNCH, true)
     }
 
     fun verifyPasscode(passcode: String): Boolean {

@@ -20,9 +20,13 @@ fun AppRoot() {
 
     val nav = rememberNavController()
 
-    // Decide start destination once
-    //val start = remember { if (vm.isPasscodeEnabled()) Routes.Unlock else Routes.Setup }
-    val start = remember { if (vm.isPasscodeEnabled()) Routes.Home else Routes.Setup }
+    val start = remember {
+        when {
+            !vm.isPasscodeEnabled() -> Routes.Setup
+            vm.shouldRequirePassOnLaunch() -> Routes.Unlock
+            else -> Routes.Home
+        }
+    }
 
     NavHost(navController = nav, startDestination = start) {
 

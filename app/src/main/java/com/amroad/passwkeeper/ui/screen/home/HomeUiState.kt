@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.amroad.passwkeeper.data.local.entity.FolderEntity
 import com.amroad.passwkeeper.data.repository.VaultRepository
+import com.amroad.passwkeeper.repo.PasscodeRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -13,14 +14,18 @@ import kotlinx.coroutines.launch
 
 data class HomeUiState(
     val folders: List<FolderEntity> = emptyList(),
-    val isLoading: Boolean = true
+    val isLoading: Boolean = true,
+    val requirePassOnLaunch: Boolean = false
 )
 
 class HomeViewModel(
-    private val repository: VaultRepository
+    private val repository: VaultRepository,
+    private val passcodeRepository: PasscodeRepository
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(HomeUiState())
+    private val _uiState = MutableStateFlow(HomeUiState(
+        requirePassOnLaunch = passcodeRepository.isRequirePassOnLaunch()
+    ))
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
     init {
@@ -30,12 +35,17 @@ class HomeViewModel(
     private fun observeFolders() {
         repository.getFolders()
             .onEach { folders ->
-                _uiState.value = HomeUiState(
+                _uiState.value = _uiState.value.copy(
                     folders = folders,
                     isLoading = false
                 )
             }
             .launchIn(viewModelScope)
+    }
+
+    fun onRequirePassOnLaunchChange(enabled: Boolean) {
+        passcodeRepository.setRequirePassOnLaunch(enabled)
+        _uiState.value = _uiState.value.copy(requirePassOnLaunch = enabled)
     }
 
     fun createFolder() {

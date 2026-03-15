@@ -205,6 +205,7 @@ private fun GreenActionRow(
                 color = Color.White,
                 style = TextStyle(
                     fontFamily = HeeboRegular,
+                    fontWeight = FontWeight(400),
                     fontSize = 15.sp
                 ),
                 modifier = Modifier

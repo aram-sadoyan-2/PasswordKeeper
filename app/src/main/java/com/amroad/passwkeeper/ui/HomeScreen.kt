@@ -28,23 +28,19 @@ fun HomeScreen(
             .fillMaxSize()
             .background(Color(0xFFE9E9E9))
     ) {
-        // Content
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-
+            modifier = Modifier.fillMaxSize()
         ) {
             when (tab) {
                 HomeTab.VAULT -> VaultScreen()
                 HomeTab.GENERATOR -> GeneratorScreen()
                 HomeTab.SETTINGS -> SettingsTabScreen(
-                    requirePassOnLaunch = true,                 // TODO connect to prefs
-                    onRequirePassOnLaunchChange = { /* TODO */ }
+                    requirePassOnLaunch = uiState.requirePassOnLaunch,
+                    onRequirePassOnLaunchChange = viewModel::onRequirePassOnLaunchChange
                 )
             }
         }
 
-        // Bottom pill
         HomeBottomPill(
             selected = tab,
             onSelect = { tab = it },
@@ -55,7 +51,3 @@ fun HomeScreen(
         )
     }
 }
-
-
-
-

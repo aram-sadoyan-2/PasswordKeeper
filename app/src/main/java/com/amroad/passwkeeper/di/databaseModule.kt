@@ -4,6 +4,8 @@ package com.amroad.passwkeeper.di
 import androidx.room.Room
 import com.amroad.passwkeeper.data.local.db.AppDatabase
 import com.amroad.passwkeeper.data.repository.VaultRepository
+import com.amroad.passwkeeper.helper.SecurePrefs
+import com.amroad.passwkeeper.repo.PasscodeRepository
 import com.amroad.passwkeeper.ui.screen.home.HomeViewModel
 import com.amroad.passwkeeper.ui.screen.folderdetails.FolderDetailsViewModel
 import org.koin.android.ext.koin.androidContext
@@ -24,7 +26,11 @@ val databaseModule = module {
 
     single { VaultRepository(get()) }
 
-    viewModel { HomeViewModel(get()) }
+    single { SecurePrefs(androidContext()) }
+
+    single { PasscodeRepository(get()) }
+
+    viewModel { HomeViewModel(get(), get()) }
 
     viewModel { (folderId: Long) ->
         FolderDetailsViewModel(
