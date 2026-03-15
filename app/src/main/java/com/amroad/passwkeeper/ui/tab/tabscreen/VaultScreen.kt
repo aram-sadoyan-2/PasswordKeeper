@@ -144,7 +144,7 @@ fun VaultScreen(
                     .imePadding(),
                 contentPadding = PaddingValues(
                     top = 12.dp,
-                    bottom = 100.dp
+                    bottom = 82.dp
                 ),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
