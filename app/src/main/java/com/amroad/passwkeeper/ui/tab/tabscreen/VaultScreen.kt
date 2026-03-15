@@ -50,6 +50,10 @@ import com.amroad.passwkeeper.ui.component.VaultFolderSwipeItem
 import com.amroad.passwkeeper.ui.screen.home.HomeViewModel
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
+import android.widget.Toast
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.AnnotatedString
 
 @Composable
 fun VaultScreen(
@@ -95,6 +99,9 @@ fun VaultScreen(
 
     val pinnedFolders = filteredFolders.filter { it.isPinned }
     val unpinnedFolders = filteredFolders.filterNot { it.isPinned }
+
+    val clipboardManager = LocalClipboardManager.current
+    val context = LocalContext.current
 
     Column(
         modifier = Modifier
@@ -172,7 +179,16 @@ fun VaultScreen(
                             showRenameDialog = true
                         },
                         onCopy = {
-                            // viewModel.createFolder("${folder.name} Copy")
+                            val textToCopy = buildString {
+                                append(folder.name)
+                                if (folder.subtitle.isNotBlank()) {
+                                    append("\n")
+                                    append(folder.subtitle)
+                                }
+                            }
+
+                            clipboardManager.setText(AnnotatedString(textToCopy))
+                            Toast.makeText(context, "Copied", Toast.LENGTH_SHORT).show()
                         },
                         onDelete = {
                             viewModel.deleteFolder(folder)
@@ -216,7 +232,16 @@ fun VaultScreen(
                             showRenameDialog = true
                         },
                         onCopy = {
-                            // viewModel.createFolder("${folder.name} Copy")
+                            val textToCopy = buildString {
+                                append(folder.name)
+                                if (folder.subtitle.isNotBlank()) {
+                                    append("\n")
+                                    append(folder.subtitle)
+                                }
+                            }
+
+                            clipboardManager.setText(AnnotatedString(textToCopy))
+                            Toast.makeText(context, "Copied", Toast.LENGTH_SHORT).show()
                         },
                         onDelete = {
                             viewModel.deleteFolder(folder)
