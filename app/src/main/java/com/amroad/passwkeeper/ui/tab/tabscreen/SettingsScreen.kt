@@ -13,11 +13,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -48,8 +54,6 @@ fun SettingsScreen(
     val bg = Color(0xFFE7E7E7)
     val darkText = Color(0xFF1F1F1F)
 
-    val context = LocalContext.current
-
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -79,7 +83,7 @@ fun SettingsScreen(
 
             GreenActionRow(
                 title = "Tell a Friend",
-                onClick = { shareApp(context) },
+                onClick = onTellAFriendClick,
                 backgroundColor = Color(0xFF3FB34F)
             )
         }
@@ -157,12 +161,11 @@ private fun BlueActionRow(
         ) {
             Text(
                 text = title,
-                color = Color.White,
                 style = TextStyle(
                     fontSize = 16.sp,
-                    fontFamily = FontFamily(Font(R.font.heebo_regular)),
+                    fontFamily = HeeboRegular,
                     fontWeight = FontWeight(400),
-                    color = Color(0xFF000000),
+                    color = Color.White
                 ),
                 modifier = Modifier.align(Alignment.Center)
             )
@@ -227,7 +230,6 @@ private fun GreenActionRow(
     }
 }
 
-
 @Composable
 private fun SettingsSwitchRow(
     title: String,
@@ -245,9 +247,8 @@ private fun SettingsSwitchRow(
             color = textColor,
             style = TextStyle(
                 fontSize = 16.sp,
-                fontFamily = FontFamily(Font(R.font.heebo_regular)),
-                fontWeight = FontWeight(400),
-                color = Color(0xFF000000),
+                fontFamily = HeeboRegular,
+                fontWeight = FontWeight(400)
             ),
             modifier = Modifier.weight(1f)
         )
@@ -268,6 +269,54 @@ private fun SettingsSwitchRow(
 }
 
 @Composable
+private fun PrivacySafetyDialog(
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        containerColor = Color.White,
+        shape = RoundedCornerShape(20.dp),
+        title = {
+            Text(
+                text = "Privacy & Safety",
+                style = TextStyle(
+                    fontFamily = HeeboRegular,
+                    fontWeight = FontWeight(700),
+                    fontSize = 20.sp,
+                    color = Color(0xFF1F1F1F)
+                )
+            )
+        },
+        text = {
+            Text(
+                text = "Your passwords and personal data are stored locally on your device.\n\n" +
+                        "We do not share your saved information with third parties.\n\n" +
+                        "For better protection, keep your app password secure and do not share it with anyone.",
+                style = TextStyle(
+                    fontFamily = HeeboRegular,
+                    fontWeight = FontWeight(400),
+                    fontSize = 15.sp,
+                    color = Color(0xFF444444)
+                )
+            )
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) {
+                Text(
+                    text = "OK",
+                    style = TextStyle(
+                        fontFamily = HeeboRegular,
+                        fontWeight = FontWeight(700),
+                        fontSize = 15.sp,
+                        color = Color(0xFF2448D8)
+                    )
+                )
+            }
+        }
+    )
+}
+
+@Composable
 fun SettingsTabScreen(
     requirePassOnLaunch: Boolean,
     onRequirePassOnLaunchChange: (Boolean) -> Unit,
@@ -275,12 +324,27 @@ fun SettingsTabScreen(
     onPrivacySafetyClick: () -> Unit = {},
     onTellAFriendClick: () -> Unit = {},
 ) {
+    val context = LocalContext.current
+    var showPrivacyDialog by remember { mutableStateOf(false) }
+
     SettingsScreen(
         requirePassOnLaunch = requirePassOnLaunch,
         onRequirePassOnLaunchChange = onRequirePassOnLaunchChange,
         onBack = {},
         onChangePasswordClick = onChangePasswordClick,
-        onPrivacySafetyClick = onPrivacySafetyClick,
-        onTellAFriendClick = onTellAFriendClick
+        onPrivacySafetyClick = {
+            showPrivacyDialog = true
+            onPrivacySafetyClick()
+        },
+        onTellAFriendClick = {
+            shareApp(context)
+            onTellAFriendClick()
+        }
     )
+
+    if (showPrivacyDialog) {
+        PrivacySafetyDialog(
+            onDismiss = { showPrivacyDialog = false }
+        )
+    }
 }
