@@ -72,7 +72,7 @@ fun SettingsScreen(
                 textColor = darkText
             )
 
-            Spacer(modifier = Modifier.height(202.dp))
+            Spacer(modifier = Modifier.height(182.dp))
 
             GreenActionRow(
                 title = "Privacy & Safety",

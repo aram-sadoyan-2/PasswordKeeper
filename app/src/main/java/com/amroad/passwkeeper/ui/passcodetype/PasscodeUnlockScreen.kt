@@ -7,22 +7,29 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.amroad.passwkeeper.ui.PasscodeDots
 import com.amroad.passwkeeper.ui.PasscodeKeypad
 import com.amroad.passwkeeper.viewmodel.PasscodeViewModel
+import com.amroad.passwkeeper.R
 
 @Composable
 fun PasscodeUnlockScreen(
     vm: PasscodeViewModel,
-    onUnlocked: () -> Unit
+    onUnlocked: () -> Unit,
+    onForgotPassword: () -> Unit
 ) {
 
     LaunchedEffect(Unit) {
         vm.resetInput()
         vm.clearError()
     }
-
 
     Column(
         modifier = Modifier
@@ -63,6 +70,22 @@ fun PasscodeUnlockScreen(
             modifier = Modifier.fillMaxWidth()
         )
 
+        Spacer(Modifier.height(46.dp))
 
+        TextButton(
+            onClick = onForgotPassword,
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        ) {
+            Text(
+                text = "Forgot password?",
+                style = TextStyle(
+                    fontSize = 15.sp,
+                    fontFamily = FontFamily(Font(R.font.heebo_regular)),
+                    fontWeight = FontWeight(400),
+                    color = Color(0xFF464646),
+                    textAlign = TextAlign.Center,
+                )
+            )
+        }
     }
 }

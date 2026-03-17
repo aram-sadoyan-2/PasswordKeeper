@@ -30,13 +30,13 @@ fun HomeBottomPill(
 ) {
     val containerShape = RoundedCornerShape(999.dp)
     val selectedBlue = Color(0xFF1D42D9)
-    val bg = Color.White
+    val bg = Color(0xFFf8f8f8)
     val text = Color.Black
 
     val items = remember {
         listOf(
             TabItem(HomeTab.VAULT, "VAULT", R.drawable.ic_tab_vault),
-            TabItem(HomeTab.GENERATOR, "GENERATOR", R.drawable.ic_tab_generator),
+            TabItem(HomeTab.GENERATOR, "GENERATOR", R.drawable.ic_generator_n),
             TabItem(HomeTab.SETTINGS, "SETTINGS", R.drawable.ic_tab_settings),
         )
     }
@@ -74,7 +74,7 @@ fun HomeBottomPill(
                         Icon(
                             painter = painterResource(item.iconRes),
                             contentDescription = item.title,
-                            modifier = Modifier.size(22.dp),
+                            modifier = Modifier.size(item.iconSize),
                             tint = if (isSelected) Color.White else Color.Black
                         )
 

@@ -85,6 +85,9 @@ fun AppRoot() {
                             }
                         }
                     }
+                },
+                onForgotPassword = {
+
                 }
             )
         }
