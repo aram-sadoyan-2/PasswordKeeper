@@ -16,10 +16,12 @@ import com.amroad.passwkeeper.viewmodel.PasscodeViewModel
 fun PasscodeSetupScreen(
     vm: PasscodeViewModel,
     onCancel: () -> Unit,
-    onNext: () -> Unit
+    onNext: () -> Unit,
+    title: String = "Enter Passcode"
 ) {
-    LaunchedEffect(vm.input) {
-        if (vm.input.length == 6) onNext()
+    LaunchedEffect(Unit) {
+        vm.resetInput()
+        vm.clearError()
     }
 
     Column(
@@ -30,7 +32,7 @@ fun PasscodeSetupScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(Modifier.height(90.dp))
-        Text("Enter Passcode", color = Color(0xFF1C1C1C))
+        Text(title, color = Color(0xFF1C1C1C))
         Spacer(Modifier.height(18.dp))
 
         PasscodeDots(
@@ -38,11 +40,26 @@ fun PasscodeSetupScreen(
             total = 6
         )
 
+        vm.error?.let {
+            Spacer(Modifier.height(12.dp))
+            Text(it, color = Color(0xFFD32F2F))
+        }
+
         Spacer(Modifier.height(50.dp))
 
         PasscodeKeypad(
-            onDigit = { vm.clearError(); vm.onDigit(it) },
-            onBackspace = { vm.clearError(); vm.onBackspace() },
+            onDigit = { digit ->
+                vm.clearError()
+                vm.onDigit(digit)
+
+                if (vm.input.length == 6) {
+                    onNext()
+                }
+            },
+            onBackspace = {
+                vm.clearError()
+                vm.onBackspace()
+            },
             modifier = Modifier.fillMaxWidth()
         )
 

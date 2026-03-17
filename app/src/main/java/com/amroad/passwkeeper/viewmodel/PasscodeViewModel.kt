@@ -96,6 +96,13 @@ class PasscodeViewModel(
         return ConfirmResult.Success
     }
 
+    fun clearSavedPasscodeForRecovery() {
+        repo.disable()
+        draftPasscode = null
+        input = ""
+        error = null
+    }
+
     fun onUnlockComplete(): Boolean {
         if (input.length != 6) return false
         val ok = repo.verifyPasscode(input)
@@ -118,6 +125,13 @@ class PasscodeViewModel(
     }
 
     fun shouldRequirePassOnLaunch(): Boolean = repo.isRequirePassOnLaunch()
+
+    fun getRecoveryQuestion(): String? = repo.getRecoveryQuestion()
+
+    fun verifyRecoveryAnswer(answer: String): Boolean {
+        return repo.verifyRecoveryAnswer(answer)
+    }
+
 }
 
 sealed class ConfirmResult {

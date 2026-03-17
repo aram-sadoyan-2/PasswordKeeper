@@ -2,8 +2,9 @@ package com.amroad.passwkeeper.ui.passcodetype
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -18,8 +19,9 @@ fun PasscodeConfirmScreen(
     onBack: () -> Unit,
     onConfirmed: () -> Unit
 ) {
-    LaunchedEffect(vm.input) {
-        if (vm.input.length == 6) onConfirmed()
+    LaunchedEffect(Unit) {
+        vm.resetInput()
+        vm.clearError()
     }
 
     Column(
@@ -28,11 +30,15 @@ fun PasscodeConfirmScreen(
             .background(color = Color(0xFFE2E2E2))
             .padding(horizontal = 24.dp)
     ) {
-
         Spacer(Modifier.height(90.dp))
-        Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
+
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxWidth()
+        ) {
             Text("Enter Passcode Again to Confirm", color = Color(0xFF1C1C1C))
             Spacer(Modifier.height(18.dp))
+
             PasscodeDots(
                 filled = vm.input.length,
                 total = 6
@@ -44,9 +50,20 @@ fun PasscodeConfirmScreen(
             }
 
             Spacer(Modifier.height(50.dp))
+
             PasscodeKeypad(
-                onDigit = { vm.clearError(); vm.onDigit(it) },
-                onBackspace = { vm.clearError(); vm.onBackspace() },
+                onDigit = { digit ->
+                    vm.clearError()
+                    vm.onDigit(digit)
+
+                    if (vm.input.length == 6) {
+                        onConfirmed()
+                    }
+                },
+                onBackspace = {
+                    vm.clearError()
+                    vm.onBackspace()
+                },
                 modifier = Modifier.fillMaxWidth()
             )
         }

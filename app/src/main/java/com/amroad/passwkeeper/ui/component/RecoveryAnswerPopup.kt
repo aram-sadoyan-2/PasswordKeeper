@@ -19,6 +19,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -26,6 +27,7 @@ import com.amroad.passwkeeper.R
 
 @Composable
 fun RecoveryAnswerPopup(
+    title: String = "Password Recovery",
     question: String,
     answer: String,
     answerError: String?,
@@ -60,7 +62,7 @@ fun RecoveryAnswerPopup(
                     )
 
                     Text(
-                        text = "Password Recovery",
+                        text = title,
                         modifier = Modifier.align(Alignment.Center),
                         style = TextStyle(
                             fontSize = 16.sp,
@@ -72,7 +74,7 @@ fun RecoveryAnswerPopup(
 
                     Image(
                         painter = painterResource(id = R.drawable.ic_popup_done),
-                        contentDescription = "Save",
+                        contentDescription = "Done",
                         modifier = Modifier
                             .size(28.dp)
                             .align(Alignment.CenterEnd)
@@ -82,6 +84,21 @@ fun RecoveryAnswerPopup(
                 }
 
                 Spacer(modifier = Modifier.height(22.dp))
+
+                answerError?.let {
+                    Text(
+                        text = it,
+                        modifier = Modifier.fillMaxWidth(),
+                        style = TextStyle(
+                            fontSize = 15.sp,
+                            fontFamily = FontFamily(Font(R.font.heebo_regular)),
+                            fontWeight = FontWeight.W400,
+                            color = Color(0xFFFF4D4F),
+                            textAlign = TextAlign.Center
+                        )
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                }
 
                 Text(
                     text = question,
@@ -131,17 +148,6 @@ fun RecoveryAnswerPopup(
                             }
                             innerTextField()
                         }
-                    )
-                }
-
-                answerError?.let {
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = it,
-                        style = TextStyle(
-                            fontSize = 12.sp,
-                            color = Color.Red
-                        )
                     )
                 }
             }

@@ -17,7 +17,7 @@ import com.amroad.passwkeeper.viewmodel.PasscodeViewModel
 fun AppRoot() {
     val context = LocalContext.current
     val vm: PasscodeViewModel = viewModel(factory = PasscodeVmFactory(context))
-
+    var resetFromRecovery by remember { mutableStateOf(false) }
     val nav = rememberNavController()
 
     val start = remember {
@@ -34,16 +34,16 @@ fun AppRoot() {
             PasscodeSetupScreen(
                 vm = vm,
                 onCancel = {
-                    vm.cancelSetup()
-                    nav.navigate(Routes.Home) {
-                        popUpTo(Routes.Setup) { inclusive = true }
-                    }
+                    resetFromRecovery = false
+                    nav.popBackStack()
                 },
                 onNext = {
-                    if (vm.onFirstEntryComplete()) {
+                    val ok = vm.onFirstEntryComplete()
+                    if (ok) {
                         nav.navigate(Routes.Confirm)
                     }
-                }
+                },
+                title = if (resetFromRecovery) "Create a new Password" else "Enter Passcode"
             )
         }
 
@@ -54,9 +54,12 @@ fun AppRoot() {
                 onConfirmed = {
                     val result = vm.onConfirmComplete()
                     if (result is ConfirmResult.Success) {
+                        resetFromRecovery = false
                         nav.navigate(Routes.Recovery) {
                             popUpTo(Routes.Setup) { inclusive = true }
                         }
+                    } else {
+
                     }
                 }
             )
@@ -66,6 +69,7 @@ fun AppRoot() {
             RecoveryQuestionScreen(
                 vm = vm,
                 onSaved = {
+                    resetFromRecovery = false
                     nav.navigate(Routes.Home) {
                         popUpTo(Routes.Recovery) { inclusive = true }
                     }
@@ -86,8 +90,14 @@ fun AppRoot() {
                         }
                     }
                 },
-                onForgotPassword = {
-
+                onResetPasscode = {
+                    resetFromRecovery = true
+                    vm.clearSavedPasscodeForRecovery()
+                    vm.resetInput()
+                    vm.clearError()
+                    nav.navigate(Routes.Setup) {
+                        popUpTo(Routes.Unlock) { inclusive = true }
+                    }
                 }
             )
         }

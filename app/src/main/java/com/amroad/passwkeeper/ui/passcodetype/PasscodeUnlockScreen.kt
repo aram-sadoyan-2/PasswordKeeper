@@ -2,29 +2,29 @@ package com.amroad.passwkeeper.ui.passcodetype
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.amroad.passwkeeper.ui.PasscodeDots
 import com.amroad.passwkeeper.ui.PasscodeKeypad
+import com.amroad.passwkeeper.ui.component.RecoveryAnswerPopup
 import com.amroad.passwkeeper.viewmodel.PasscodeViewModel
-import com.amroad.passwkeeper.R
 
 @Composable
 fun PasscodeUnlockScreen(
     vm: PasscodeViewModel,
     onUnlocked: () -> Unit,
-    onForgotPassword: () -> Unit
+    onResetPasscode: () -> Unit
 ) {
+    var showRecoveryPopup by remember { mutableStateOf(false) }
+    var recoveryAnswer by remember { mutableStateOf("") }
+    var recoveryError by remember { mutableStateOf<String?>(null) }
+
+    val savedQuestion = vm.getRecoveryQuestion()
 
     LaunchedEffect(Unit) {
         vm.resetInput()
@@ -39,7 +39,12 @@ fun PasscodeUnlockScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(Modifier.height(90.dp))
-        Text("Enter Passcode to unlock", color = Color(0xFF1C1C1C))
+
+        Text(
+            text = "Enter Passcode to unlock",
+            color = Color(0xFF1C1C1C)
+        )
+
         Spacer(Modifier.height(18.dp))
 
         PasscodeDots(
@@ -70,22 +75,58 @@ fun PasscodeUnlockScreen(
             modifier = Modifier.fillMaxWidth()
         )
 
-        Spacer(Modifier.height(46.dp))
+        Spacer(Modifier.height(16.dp))
 
-        TextButton(
-            onClick = onForgotPassword,
-            modifier = Modifier.align(Alignment.CenterHorizontally)
-        ) {
-            Text(
-                text = "Forgot password?",
-                style = TextStyle(
-                    fontSize = 15.sp,
-                    fontFamily = FontFamily(Font(R.font.heebo_regular)),
-                    fontWeight = FontWeight(400),
-                    color = Color(0xFF464646),
-                    textAlign = TextAlign.Center,
+        if (vm.isRecoveryQuestionSet() && !savedQuestion.isNullOrBlank()) {
+            TextButton(
+                onClick = {
+                    recoveryAnswer = ""
+                    recoveryError = null
+                    showRecoveryPopup = true
+                }
+            ) {
+                Text(
+                    text = "Forgot password?",
+                    color = Color(0xFF1D42D9)
                 )
-            )
+            }
         }
+    }
+
+    if (showRecoveryPopup && !savedQuestion.isNullOrBlank()) {
+        RecoveryAnswerPopup(
+            title = "Password Recovery",
+            question = savedQuestion,
+            answer = recoveryAnswer,
+            answerError = recoveryError,
+            onAnswerChange = {
+                recoveryAnswer = it
+                recoveryError = null
+            },
+            onDismiss = {
+                showRecoveryPopup = false
+                recoveryAnswer = ""
+                recoveryError = null
+            },
+            onSave = {
+                val trimmed = recoveryAnswer.trim()
+
+                if (trimmed.isBlank()) {
+                    recoveryError = "Answer cannot be empty"
+                    return@RecoveryAnswerPopup
+                }
+
+                val isCorrect = vm.verifyRecoveryAnswer(trimmed)
+
+                if (isCorrect) {
+                    showRecoveryPopup = false
+                    recoveryAnswer = ""
+                    recoveryError = null
+                    onResetPasscode()
+                } else {
+                    recoveryError = "Try Again"
+                }
+            }
+        )
     }
 }

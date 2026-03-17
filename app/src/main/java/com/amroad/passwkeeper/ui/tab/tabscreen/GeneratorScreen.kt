@@ -496,12 +496,12 @@ private fun GeneratedPasswordCard(
                 )
             }
 
-            Spacer(modifier = Modifier.width(6.dp))
-
-            SmallActionButton(
-                text = "Add to",
-                onClick = onAddToClick
-            )
+//            Spacer(modifier = Modifier.width(6.dp))
+//
+//            SmallActionButton(
+//                text = "Add to",
+//                onClick = onAddToClick
+//            )
 
             Spacer(modifier = Modifier.width(6.dp))
 
