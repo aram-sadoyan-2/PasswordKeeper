@@ -37,19 +37,19 @@ class VaultRepository(
             )
         )
 
-        vaultDao.insertItem(
-            VaultItemEntity(
-                folderId = folderId,
-                title = "title",
-                notePrimaryName = "notes",
-                notePrimaryValue = "",
-                noteSecondaryName = "notes",
-                noteSecondaryValue = "",
-                noteAdditional = "notes",
-                createdAt = now,
-                updatedAt = now
-            )
-        )
+//        vaultDao.insertItem(
+//            VaultItemEntity(
+//                folderId = folderId,
+//                title = "title",
+//                notePrimaryName = "notes",
+//                notePrimaryValue = "",
+//                noteSecondaryName = "notes",
+//                noteSecondaryValue = "",
+//                noteAdditional = "notes",
+//                createdAt = now,
+//                updatedAt = now
+//            )
+//        )
 
         return folderId
     }

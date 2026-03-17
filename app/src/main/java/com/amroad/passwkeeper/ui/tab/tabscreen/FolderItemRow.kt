@@ -285,7 +285,8 @@ fun FolderItemRow(
                 ItemEditableText(
                     text = additionalNote,
                     isEditMode = isEditMode,
-                    onValueChange = { additionalNote = it }
+                    onValueChange = { additionalNote = it },
+                    hasMultipleLine = true
                 )
             }
 
@@ -326,6 +327,7 @@ private fun ItemEditableText(
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     isTitle: Boolean = false,
+    hasMultipleLine: Boolean? = false,
 ) {
     val bringIntoViewRequester = remember { BringIntoViewRequester() }
     val scope = rememberCoroutineScope()
@@ -348,8 +350,8 @@ private fun ItemEditableText(
             BasicTextField(
                 value = text,
                 onValueChange = onValueChange,
-                singleLine = true,
-                maxLines = 1,
+                singleLine = hasMultipleLine != true,
+                maxLines = if (hasMultipleLine == true) 10 else 1,
                 textStyle = TextStyle(
                     fontSize = if (isTitle) 22.sp else 16.sp,
                     fontFamily = FontFamily(
