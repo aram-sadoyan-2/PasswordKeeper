@@ -17,7 +17,8 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel = koinViewModel()
+    viewModel: HomeViewModel = koinViewModel(),
+    onChangePasswordClick: () -> Unit
 ) {
     val uiState = viewModel.uiState.collectAsState().value
 
@@ -36,7 +37,8 @@ fun HomeScreen(
                 HomeTab.GENERATOR -> GeneratorScreen()
                 HomeTab.SETTINGS -> SettingsTabScreen(
                     requirePassOnLaunch = uiState.requirePassOnLaunch,
-                    onRequirePassOnLaunchChange = viewModel::onRequirePassOnLaunchChange
+                    onRequirePassOnLaunchChange = viewModel::onRequirePassOnLaunchChange,
+                    onChangePasswordClick = onChangePasswordClick
                 )
             }
         }

@@ -19,6 +19,7 @@ fun AppRoot() {
     val vm: PasscodeViewModel = viewModel(factory = PasscodeVmFactory(context))
     var resetFromRecovery by remember { mutableStateOf(false) }
     val nav = rememberNavController()
+    var openRecoveryFromChangePassword by remember { mutableStateOf(false) }
 
     val start = remember {
         when {
@@ -83,6 +84,7 @@ fun AppRoot() {
                 onUnlocked = {
                     vm.unlockAsync { ok ->
                         if (ok) {
+                            openRecoveryFromChangePassword = false
                             val next = if (vm.isRecoveryQuestionSet()) Routes.Home else Routes.Recovery
                             nav.navigate(next) {
                                 popUpTo(Routes.Unlock) { inclusive = true }
@@ -92,18 +94,25 @@ fun AppRoot() {
                 },
                 onResetPasscode = {
                     resetFromRecovery = true
+                    openRecoveryFromChangePassword = false
                     vm.clearSavedPasscodeForRecovery()
-                    vm.resetInput()
-                    vm.clearError()
                     nav.navigate(Routes.Setup) {
                         popUpTo(Routes.Unlock) { inclusive = true }
                     }
-                }
+                },
+                openRecoveryImmediately = openRecoveryFromChangePassword
             )
         }
 
         composable(Routes.Home) {
-            HomeScreen()
+            HomeScreen(
+                onChangePasswordClick = {
+                    openRecoveryFromChangePassword = true
+                    vm.resetInput()
+                    vm.clearError()
+                    nav.navigate(Routes.Unlock)
+                }
+            )
         }
     }
 }

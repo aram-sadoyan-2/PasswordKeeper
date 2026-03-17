@@ -18,7 +18,8 @@ import com.amroad.passwkeeper.viewmodel.PasscodeViewModel
 fun PasscodeUnlockScreen(
     vm: PasscodeViewModel,
     onUnlocked: () -> Unit,
-    onResetPasscode: () -> Unit
+    onResetPasscode: () -> Unit,
+    openRecoveryImmediately: Boolean = false
 ) {
     var showRecoveryPopup by remember { mutableStateOf(false) }
     var recoveryAnswer by remember { mutableStateOf("") }
@@ -29,6 +30,9 @@ fun PasscodeUnlockScreen(
     LaunchedEffect(Unit) {
         vm.resetInput()
         vm.clearError()
+        if (openRecoveryImmediately && vm.isRecoveryQuestionSet() && !savedQuestion.isNullOrBlank()) {
+            showRecoveryPopup = true
+        }
     }
 
     Column(
